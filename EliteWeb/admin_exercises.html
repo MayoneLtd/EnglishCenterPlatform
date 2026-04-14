@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập AI - Elite Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/exercise.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" style="position:fixed;inset:0;background:var(--bg-dark);z-index:9999;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size:32px;color:var(--secondary);"></i>
+            <p style="margin-top:15px;color:var(--text-muted);">Đang tải...</p>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar admin-sidebar">
+        <a href="index.html" class="logo">
+            <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
+            ELITE
+        </a>
+        <div class="admin-label"><i class="fa-solid fa-shield-halved"></i> ADMIN</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_dashboard.html?tab=overview"><i class="fa-solid fa-chart-pie"></i> Tổng quan</a></li>
+            <li><a href="admin_dashboard.html?tab=students"><i class="fa-solid fa-user-graduate"></i> Quản lý học viên</a></li>
+            <li><a href="admin_dashboard.html?tab=courses"><i class="fa-solid fa-book-open"></i> Quản lý khóa học</a></li>
+            <li><a href="admin_dashboard.html?tab=teachers"><i class="fa-solid fa-chalkboard-user"></i> Giảng viên</a></li>
+            <li><a href="#" class="active"><i class="fa-solid fa-robot"></i> Bài tập AI</a></li>
+            <li><a href="admin_dashboard.html?tab=ai-settings"><i class="fa-solid fa-key"></i> Cài đặt AI</a></li>
+        </ul>
+        <div class="sidebar-bottom">
+            <ul class="sidebar-menu">
+                <li><a href="#" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="greeting">🤖 Bài tập AI</h1>
+                <p class="greeting-sub">Tạo bài tập tự động bằng Google Gemini AI</p>
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <strong id="adminName">Admin</strong>
+                    <span style="color:var(--secondary);">Quản trị viên</span>
+                </div>
+                <div class="avatar" style="background:linear-gradient(135deg,var(--secondary),#9333EA);">AD</div>
+            </div>
+        </div>
+
+        <!-- Section Tabs -->
+        <div class="section-tabs">
+            <button class="section-tab active" data-section="create"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo bài tập</button>
+            <button class="section-tab" data-section="library"><i class="fa-solid fa-book"></i> Thư viện</button>
+        </div>
+
+        <!-- ===== SECTION: Tạo bài tập ===== -->
+        <div class="section-content active" id="sec-create">
+            <!-- Loading states -->
+            <div id="ocrLoading" style="display:none;">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">🔍 Gemini Vision đang đọc ảnh<span class="loading-dots"></span></p>
+                    <p style="color:var(--text-muted);font-size:13px;" id="ocrProgressText">Đang phân tích ảnh bằng AI</p>
+                </div>
+            </div>
+
+            <div id="generateLoading" style="display:none;">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">🤖 AI đang phân tích và tạo bài tập<span class="loading-dots"></span></p>
+                    <p style="color:var(--text-muted);font-size:13px;">AI sẽ tự động chọn loại bài tập phù hợp</p>
+                </div>
+            </div>
+
+            <!-- Input form -->
+            <div id="createForm">
+                <div class="teacher-grid">
+                    <!-- Left: Content input -->
+                    <div class="content-panel">
+                        <h3 class="panel-title">📄 Nội dung bài giảng</h3>
+
+                        <div class="ex-tabs">
+                            <button class="ex-tab-btn active" data-input-tab="paste">✏️ Nhập text</button>
+                            <button class="ex-tab-btn" data-input-tab="upload">📁 Upload file</button>
+                            <button class="ex-tab-btn" data-input-tab="ocr">📷 Ảnh (OCR)</button>
+                        </div>
+
+                        <!-- Paste tab -->
+                        <div class="input-tab-content active" id="inputTab-paste">
+                            <textarea class="ex-textarea" id="contentInput" placeholder="Dán nội dung bài giảng vào đây...&#10;&#10;Ví dụ:&#10;1. every day / get up / at half past seven&#10;2. once a week / watch a film / at the cinema&#10;3. often / eat fast food / for lunch"></textarea>
+                        </div>
+
+                        <!-- Upload tab -->
+                        <div class="input-tab-content" id="inputTab-upload" style="display:none;">
+                            <div class="upload-area">
+                                <div class="upload-icon">📤</div>
+                                <p class="upload-text">Kéo thả hoặc click để upload</p>
+                                <p class="upload-hint">Hỗ trợ: .txt, .md (text files) — Nội dung sẽ được nối vào</p>
+                                <input type="file" accept=".txt,.md,.text" id="fileUploadInput">
+                            </div>
+                        </div>
+
+                        <!-- OCR tab -->
+                        <div class="input-tab-content" id="inputTab-ocr" style="display:none;">
+                            <div id="ocrAccumulatedBanner" class="ocr-accumulated-banner" style="display:none;">
+                                <span id="ocrAccumulatedText">📋 Đã có nội dung từ OCR trước đó</span>
+                                <span class="ocr-accumulated-hint">Upload thêm ảnh → text sẽ được nối tiếp</span>
+                            </div>
+
+                            <div class="upload-area" id="ocrUploadArea">
+                                <div class="upload-icon">📷</div>
+                                <p class="upload-text">Tải ảnh lên để trích xuất văn bản</p>
+                                <p class="upload-hint">Hỗ trợ: PNG, JPG, WEBP, GIF — Tối đa 10MB/ảnh</p>
+                            </div>
+                            <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif" multiple id="ocrFileInput" style="display:none;">
+
+                            <div id="ocrPreviewSection" class="ocr-preview-section" style="display:none;">
+                                <div class="ocr-preview-header">
+                                    <span class="ocr-preview-count" id="ocrPreviewCount">📸 0 ảnh mới chờ xử lý</span>
+                                    <button class="ex-btn ex-btn-sm ex-btn-secondary" id="ocrAddMoreBtn">+ Thêm ảnh</button>
+                                </div>
+                                <div class="ocr-preview-grid" id="ocrPreviewGrid"></div>
+                                <button class="ex-btn ex-btn-primary ex-btn-lg ex-btn-full" style="margin-top:12px;" id="ocrExtractBtn">🔍 Trích xuất văn bản (Gemini Vision)</button>
+                            </div>
+
+                            <div id="ocrResultSection" class="ocr-result-section slide-in" style="display:none;">
+                                <div class="ocr-result-header">
+                                    <h4>✅ Nội dung đã trích xuất</h4>
+                                    <div class="flex gap-2" style="display:flex;gap:8px;">
+                                        <button class="ex-btn ex-btn-sm ex-btn-danger" id="ocrClearBtn">🗑️ Xóa hết</button>
+                                        <button class="ex-btn ex-btn-sm ex-btn-success" id="ocrUseBtn">✏️ Chỉnh sửa</button>
+                                    </div>
+                                </div>
+                                <textarea class="ex-textarea" style="min-height:180px;" id="ocrResultText"></textarea>
+                                <p class="ocr-result-hint">💡 Upload thêm ảnh ở trên → nội dung sẽ tự động nối vào cuối</p>
+                            </div>
+                        </div>
+
+                        <p id="contentCharCount" style="margin-top:10px;color:var(--text-muted);font-size:12px;display:none;"></p>
+                    </div>
+
+                    <!-- Right: Settings -->
+                    <div class="content-panel">
+                        <h3 class="panel-title">⚙️ Cấu hình bài tập</h3>
+
+                        <div class="ex-form-group">
+                            <label class="ex-form-label">Tiêu đề bài tập *</label>
+                            <input class="ex-input" placeholder="VD: Unit 5 - Present Simple" id="titleInput">
+                        </div>
+
+                        <div class="ex-form-group">
+                            <label class="ex-form-label">Khóa học</label>
+                            <select class="ex-select" id="gradeInput">
+                                <option value="Chung">-- Chung (không gắn khóa) --</option>
+                            </select>
+                        </div>
+
+                        <div class="ex-form-group">
+                            <label class="ex-form-label">Mức độ khó</label>
+                            <select class="ex-select" id="difficultyInput">
+                                <option value="Dễ">Dễ</option>
+                                <option value="Trung bình" selected>Trung bình</option>
+                                <option value="Khó">Khó</option>
+                            </select>
+                        </div>
+
+                        <div class="ai-generate-info">
+                            <p class="ai-generate-info-title">🤖 AI sẽ tự động:</p>
+                            <ul>
+                                <li>Phân tích nội dung bài giảng</li>
+                                <li>Chọn loại bài tập phù hợp</li>
+                                <li>Tạo bao nhiêu câu tùy nội dung</li>
+                            </ul>
+                            <p class="ai-generate-info-types">Viết câu • Điền từ • Viết lại • Trắc nghiệm • Nối • Sắp xếp • Dịch...</p>
+                        </div>
+
+                        <div class="ocr-flow-indicator">
+                            <div class="flow-step" id="flowStep1">
+                                <div class="flow-step-number">1</div>
+                                <div class="flow-step-text">
+                                    <span class="flow-step-title">Nội dung</span>
+                                    <span class="flow-step-desc" id="flowDesc1">Nhập / Upload / OCR</span>
+                                </div>
+                            </div>
+                            <div class="flow-connector"></div>
+                            <div class="flow-step" id="flowStep2">
+                                <div class="flow-step-number">2</div>
+                                <div class="flow-step-text">
+                                    <span class="flow-step-title">Cấu hình</span>
+                                    <span class="flow-step-desc" id="flowDesc2">Tiêu đề & cài đặt</span>
+                                </div>
+                            </div>
+                            <div class="flow-connector"></div>
+                            <div class="flow-step" id="flowStep3">
+                                <div class="flow-step-number">3</div>
+                                <div class="flow-step-text">
+                                    <span class="flow-step-title">Tạo AI</span>
+                                    <span class="flow-step-desc">Tự động sinh bài tập</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="ex-btn ex-btn-primary ex-btn-lg ex-btn-full" style="margin-top:16px;" id="generateBtn" disabled>
+                            🤖 Tạo bài tập bằng AI
+                        </button>
+
+                        <p id="noApiKeyWarning" style="text-align:center;color:#f59e0b;font-size:12px;margin-top:10px;display:none;">
+                            ⚠️ Chưa có API Key. Vào <a href="admin_dashboard.html?tab=ai-settings" style="color:var(--accent);text-decoration:underline;">Cài đặt AI</a> để nhập.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generated questions preview -->
+            <div id="previewSection" style="display:none;" class="slide-in">
+                <div class="generated-header">
+                    <div>
+                        <h2 id="previewTitle">✅ Đã tạo câu hỏi</h2>
+                        <p class="generated-header-hint">Nhấn ✏️ để chỉnh sửa hoặc 🗑️ để xóa từng câu</p>
+                    </div>
+                    <div class="generated-header-actions">
+                        <button class="ex-btn ex-btn-secondary" id="backToFormBtn">← Quay lại</button>
+                        <button class="ex-btn ex-btn-success ex-btn-lg" id="saveExerciseBtn">💾 Lưu vào thư viện</button>
+                    </div>
+                </div>
+                <div id="questionsPreview"></div>
+            </div>
+        </div>
+
+        <!-- ===== SECTION: Thư viện ===== -->
+        <div class="section-content" id="sec-library">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <div>
+                    <h2>🗂️ Thư viện bài tập</h2>
+                    <p style="color:var(--text-muted);font-size:13px;">Quản lý bài tập đã tạo</p>
+                </div>
+                <button class="ex-btn ex-btn-primary" onclick="switchSection('create')">+ Tạo bài mới</button>
+            </div>
+            <div class="exercise-cards-grid" id="libraryGrid"></div>
+            <div id="libraryEmpty" class="empty-state" style="display:none;">
+                <div class="empty-icon">📭</div>
+                <h3 class="empty-title">Chưa có bài tập nào</h3>
+                <p class="empty-desc">Hãy tạo bài tập đầu tiên bằng cách upload nội dung bài giảng.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast -->
+    <div id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/gemini.js"></script>
+    <script>
+        // ===== State =====
+        let currentProfile = null;
+        let generatedQuestions = null;
+        let ocrImages = [];
+        let ocrResult = '';
+        const TYPE_LABELS = {
+            write_sentence: '✏️ Viết câu', fill_blank: '📝 Điền từ',
+            rewrite: '🔄 Viết lại câu', multiple_choice: '🔘 Trắc nghiệm',
+            matching: '🔗 Nối', ordering: '🔢 Sắp xếp',
+            short_answer: '💬 Trả lời ngắn', translation: '🌐 Dịch'
+        };
+
+        // ===== Toast =====
+        function showToast(msg, type = 'info') {
+            const t = document.createElement('div');
+            t.className = `ex-toast ${type}`;
+            t.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span><span>${msg}</span>`;
+            document.getElementById('toastContainer').appendChild(t);
+            setTimeout(() => t.remove(), 3500);
+        }
+
+        function switchSection(name) {
+            document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            document.querySelector(`[data-section="${name}"]`)?.classList.add('active');
+            document.getElementById('sec-' + name)?.classList.add('active');
+            if (name === 'library') loadLibrary();
+        }
+
+        document.querySelectorAll('.section-tab').forEach(tab => {
+            tab.addEventListener('click', () => switchSection(tab.dataset.section));
+        });
+
+        // ===== Input Tabs =====
+        document.querySelectorAll('.ex-tab-btn[data-input-tab]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.ex-tab-btn[data-input-tab]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.input-tab-content').forEach(c => c.style.display = 'none');
+                document.getElementById('inputTab-' + btn.dataset.inputTab).style.display = 'block';
+            });
+        });
+
+        // ===== Flow Indicator =====
+        function updateFlow() {
+            const content = document.getElementById('contentInput').value;
+            const title = document.getElementById('titleInput').value;
+            const s1 = document.getElementById('flowStep1');
+            const s2 = document.getElementById('flowStep2');
+            const s3 = document.getElementById('flowStep3');
+
+            s1.className = 'flow-step ' + (content ? 'completed' : 'active');
+            s2.className = 'flow-step ' + (content && title ? 'completed' : content ? 'active' : '');
+            s3.className = 'flow-step ' + (generatedQuestions ? 'completed' : '');
+
+            document.getElementById('flowDesc1').textContent = content ? `✅ ${content.length} ký tự` : 'Nhập / Upload / OCR';
+            document.getElementById('flowDesc2').textContent = title ? `✅ ${title}` : 'Tiêu đề & cài đặt';
+
+            // Char count
+            const cc = document.getElementById('contentCharCount');
+            if (content) { cc.style.display = 'block'; cc.textContent = `📏 Tổng cộng ${content.length} ký tự`; }
+            else { cc.style.display = 'none'; }
+
+            // Generate button
+            const apiKey = localStorage.getItem('gemini_api_key');
+            document.getElementById('generateBtn').disabled = !content.trim() || !title.trim() || !apiKey;
+            document.getElementById('noApiKeyWarning').style.display = apiKey ? 'none' : 'block';
+        }
+
+        document.getElementById('contentInput').addEventListener('input', updateFlow);
+        document.getElementById('titleInput').addEventListener('input', updateFlow);
+
+        // ===== File Upload =====
+        document.getElementById('fileUploadInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const inp = document.getElementById('contentInput');
+                inp.value = inp.value ? inp.value + '\n\n---\n\n' + ev.target.result : ev.target.result;
+                updateFlow();
+                showToast(`Đã tải file: ${file.name}`, 'success');
+            };
+            reader.readAsText(file);
+        });
+
+        // ===== OCR =====
+        document.getElementById('ocrUploadArea').addEventListener('click', () => document.getElementById('ocrFileInput').click());
+        document.getElementById('ocrAddMoreBtn').addEventListener('click', () => document.getElementById('ocrFileInput').click());
+
+        document.getElementById('ocrFileInput').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                if (file.size > 10 * 1024 * 1024) { showToast(`File "${file.name}" quá lớn`, 'error'); return; }
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const base64Full = ev.target.result;
+                    ocrImages.push({
+                        preview: base64Full,
+                        base64Data: base64Full.split(',')[1],
+                        mimeType: file.type,
+                        name: file.name,
+                    });
+                    renderOcrPreviews();
+                };
+                reader.readAsDataURL(file);
+            });
+            e.target.value = '';
+        });
+
+        function renderOcrPreviews() {
+            const grid = document.getElementById('ocrPreviewGrid');
+            const section = document.getElementById('ocrPreviewSection');
+            if (ocrImages.length === 0) { section.style.display = 'none'; return; }
+            section.style.display = 'block';
+            document.getElementById('ocrPreviewCount').textContent = `📸 ${ocrImages.length} ảnh mới chờ xử lý`;
+            grid.innerHTML = ocrImages.map((img, i) => `
+                <div class="ocr-preview-item">
+                    <img src="${img.preview}" alt="${img.name}">
+                    <button class="ocr-preview-remove" onclick="removeOcrImage(${i})">✕</button>
+                    <div class="ocr-preview-name">${img.name}</div>
+                </div>`).join('');
+        }
+
+        function removeOcrImage(i) { ocrImages.splice(i, 1); renderOcrPreviews(); }
+
+        document.getElementById('ocrExtractBtn').addEventListener('click', async () => {
+            if (!ocrImages.length) { showToast('Vui lòng tải ảnh lên trước!', 'error'); return; }
+            if (!isGeminiReady()) { showToast('Cần nhập Gemini API Key trước!', 'error'); return; }
+
+            document.getElementById('ocrLoading').style.display = 'block';
+            document.getElementById('createForm').style.display = 'none';
+
+            try {
+                let extracted = '';
+                if (ocrImages.length === 1) {
+                    extracted = await extractTextFromImage(ocrImages[0].base64Data, ocrImages[0].mimeType);
+                } else {
+                    extracted = await extractTextFromImages(ocrImages.map(img => ({ base64Data: img.base64Data, mimeType: img.mimeType })));
+                }
+
+                ocrResult = ocrResult ? ocrResult + '\n\n---\n\n' + extracted : extracted;
+                const contentInput = document.getElementById('contentInput');
+                contentInput.value = contentInput.value ? contentInput.value + '\n\n---\n\n' + extracted : extracted;
+
+                document.getElementById('ocrResultText').value = ocrResult;
+                document.getElementById('ocrResultSection').style.display = 'block';
+                document.getElementById('ocrAccumulatedBanner').style.display = 'flex';
+                document.getElementById('ocrAccumulatedText').textContent = `📋 Đã có ${ocrResult.length} ký tự từ OCR`;
+                ocrImages = [];
+                renderOcrPreviews();
+                updateFlow();
+                showToast(`✅ Đã trích xuất text!`, 'success');
+            } catch (err) {
+                showToast('Lỗi OCR: ' + err.message, 'error');
+            }
+
+            document.getElementById('ocrLoading').style.display = 'none';
+            document.getElementById('createForm').style.display = 'block';
+        });
+
+        document.getElementById('ocrClearBtn').addEventListener('click', () => {
+            ocrResult = '';
+            document.getElementById('contentInput').value = '';
+            document.getElementById('ocrResultSection').style.display = 'none';
+            document.getElementById('ocrAccumulatedBanner').style.display = 'none';
+            updateFlow();
+        });
+
+        document.getElementById('ocrUseBtn').addEventListener('click', () => {
+            document.getElementById('contentInput').value = ocrResult;
+            document.querySelectorAll('.ex-tab-btn[data-input-tab]').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-input-tab="paste"]').classList.add('active');
+            document.querySelectorAll('.input-tab-content').forEach(c => c.style.display = 'none');
+            document.getElementById('inputTab-paste').style.display = 'block';
+            updateFlow();
+            showToast('Đã chuyển nội dung OCR sang trình soạn thảo!', 'success');
+        });
+
+        document.getElementById('ocrResultText').addEventListener('input', (e) => {
+            ocrResult = e.target.value;
+            document.getElementById('contentInput').value = ocrResult;
+            updateFlow();
+        });
+
+        // ===== Generate Exercises =====
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const content = document.getElementById('contentInput').value;
+            const title = document.getElementById('titleInput').value;
+            const difficulty = document.getElementById('difficultyInput').value;
+
+            if (!content.trim() || !title.trim()) { showToast('Vui lòng nhập nội dung và tiêu đề!', 'error'); return; }
+
+            document.getElementById('createForm').style.display = 'none';
+            document.getElementById('generateLoading').style.display = 'block';
+
+            try {
+                generatedQuestions = await generateExercises(content, difficulty);
+                renderQuestionsPreview();
+                document.getElementById('previewSection').style.display = 'block';
+                showToast(`Đã tạo ${generatedQuestions.length} bài tập!`, 'success');
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, 'error');
+                document.getElementById('createForm').style.display = 'block';
+            }
+
+            document.getElementById('generateLoading').style.display = 'none';
+        });
+
+        function renderQuestionsPreview() {
+            document.getElementById('previewTitle').textContent = `✅ Đã tạo ${generatedQuestions.length} câu hỏi`;
+            const container = document.getElementById('questionsPreview');
+            container.innerHTML = generatedQuestions.map((q, i) => `
+                <div class="generated-question-item" id="qItem-${i}">
+                    <div class="q-header">
+                        <div class="q-number">Câu ${i + 1} — ${TYPE_LABELS[q.type] || '📝 ' + q.type}</div>
+                        <div class="q-actions">
+                            <button class="q-action-btn q-action-delete" onclick="deleteQuestion(${i})">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="q-content">
+                        ${q.instruction ? `<div class="q-instruction">${q.instruction}</div>` : ''}
+                        <div class="q-question">${q.question}</div>
+                        ${q.type === 'multiple_choice' && q.options ? `<div style="margin-top:8px;">${q.options.map((o, j) => `<div style="padding:4px 0;font-size:13px;color:${j === q.correctIndex ? '#10b981' : 'var(--text-muted)'};">${String.fromCharCode(65+j)}. ${o} ${j === q.correctIndex ? '✓' : ''}</div>`).join('')}</div>` : ''}
+                        ${q.sampleAnswer ? `<div class="q-answer">✅ Đáp án: ${q.sampleAnswer}</div>` : ''}
+                        ${q.hints ? `<div class="q-hints">💡 ${q.hints}</div>` : ''}
+                    </div>
+                </div>`).join('');
+        }
+
+        function deleteQuestion(index) {
+            generatedQuestions.splice(index, 1);
+            renderQuestionsPreview();
+            showToast('Đã xóa câu hỏi!', 'info');
+        }
+
+        document.getElementById('backToFormBtn').addEventListener('click', () => {
+            generatedQuestions = null;
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('createForm').style.display = 'block';
+            updateFlow();
+        });
+
+        // ===== Save Exercise =====
+        document.getElementById('saveExerciseBtn').addEventListener('click', async () => {
+            if (!generatedQuestions || !generatedQuestions.length) return;
+
+            const title = document.getElementById('titleInput').value.trim();
+            const content = document.getElementById('contentInput').value;
+            const grade = document.getElementById('gradeInput').value.trim() || 'Chung';
+            const difficulty = document.getElementById('difficultyInput').value;
+
+            try {
+                const session = await getSession();
+                await createExercise({
+                    title: title,
+                    description: content.substring(0, 200) + (content.length > 200 ? '...' : ''),
+                    grade: grade,
+                    difficulty: difficulty,
+                    question_count: generatedQuestions.length,
+                    questions: generatedQuestions,
+                    created_by: session.user.id
+                });
+
+                showToast('Đã lưu bài tập vào thư viện!', 'success');
+
+                // Reset form
+                document.getElementById('titleInput').value = '';
+                document.getElementById('contentInput').value = '';
+                document.getElementById('gradeInput').value = 'Chung';
+                generatedQuestions = null;
+                ocrResult = '';
+                document.getElementById('previewSection').style.display = 'none';
+                document.getElementById('createForm').style.display = 'block';
+                updateFlow();
+
+                switchSection('library');
+            } catch (err) {
+                showToast('Lỗi lưu: ' + err.message, 'error');
+            }
+        });
+
+        // ===== Library =====
+        async function loadLibrary() {
+            const grid = document.getElementById('libraryGrid');
+            const empty = document.getElementById('libraryEmpty');
+            try {
+                const exercises = await getAllExercises();
+                if (!exercises.length) {
+                    grid.innerHTML = '';
+                    empty.style.display = 'block';
+                    return;
+                }
+                empty.style.display = 'none';
+                grid.innerHTML = exercises.map(ex => `
+                    <div class="exercise-card" onclick="viewExerciseDetail('${ex.id}')">
+                        <div class="card-header">
+                            <h3 class="card-title">${ex.title}</h3>
+                            <span class="ex-badge ${ex.difficulty === 'Dễ' ? 'ex-badge-emerald' : ex.difficulty === 'Trung bình' ? 'ex-badge-amber' : 'ex-badge-rose'}">${ex.difficulty}</span>
+                        </div>
+                        <p class="card-desc">${ex.description || ''}</p>
+                        <div class="card-meta">
+                            <span>🏫 ${ex.grade || 'Chung'}</span>
+                            <span>📋 ${ex.question_count} câu</span>
+                            <span>📅 ${new Date(ex.created_at).toLocaleDateString('vi-VN')}</span>
+                        </div>
+                        <div style="margin-top:10px;display:flex;gap:6px;">
+                            <button class="ex-btn ex-btn-sm ex-btn-danger" onclick="event.stopPropagation();deleteExerciseAction('${ex.id}')">🗑️ Xóa</button>
+                        </div>
+                    </div>`).join('');
+            } catch (err) {
+                showToast('Lỗi tải thư viện: ' + err.message, 'error');
+            }
+        }
+
+        async function deleteExerciseAction(id) {
+            if (!confirm('Bạn có chắc muốn xóa bài tập này?')) return;
+            try {
+                await deleteExercise(id);
+                showToast('Đã xóa bài tập!', 'success');
+                loadLibrary();
+            } catch (err) {
+                showToast('Lỗi xóa: ' + err.message, 'error');
+            }
+        }
+
+        function viewExerciseDetail(id) {
+            showToast('Hãy xem chi tiết bài nộp trong trang Quản lý khóa học', 'info');
+        }
+
+
+        // ===== API Key (load from Supabase) =====
+        async function loadApiKey() {
+            try {
+                const key = await getGeminiApiKey();
+                if (key) {
+                    localStorage.setItem('gemini_api_key', key);
+                    initGemini(key);
+                } else {
+                    // Fallback to localStorage
+                    const localKey = localStorage.getItem('gemini_api_key');
+                    if (localKey) initGemini(localKey);
+                }
+            } catch(e) {
+                console.warn('Could not load API key from Supabase, using localStorage fallback');
+                const localKey = localStorage.getItem('gemini_api_key');
+                if (localKey) initGemini(localKey);
+            }
+        }
+
+        // ===== Logout =====
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await signOut();
+            window.location.href = 'admin_login.html';
+        });
+
+        // ===== Init =====
+        (async () => {
+            currentProfile = await requireAuth('admin');
+            if (!currentProfile) return;
+            document.getElementById('adminName').textContent = currentProfile.full_name || 'Admin';
+            loadApiKey();
+            // Load courses into dropdown
+            try {
+                const courses = await getAllCourses();
+                const sel = document.getElementById('gradeInput');
+                courses.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.name;
+                    opt.textContent = c.name;
+                    sel.appendChild(opt);
+                });
+            } catch(e) { console.warn('Could not load courses for dropdown'); }
+            updateFlow();
+            document.getElementById('loadingOverlay').style.display = 'none';
+        })();
+    </script>
+</body>
+</html>

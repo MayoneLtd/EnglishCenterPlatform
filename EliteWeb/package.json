@@ -1,0 +1,11 @@
+{
+  "name": "elite-web",
+  "version": "1.0.0",
+  "description": "Elite Language Center Website",
+  "scripts": {
+    "dev": "npx live-server --port=8080"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.103.0"
+  }
+}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập Quản trị - Elite</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .login-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-dark);
+            position: relative;
+            overflow: hidden;
+        }
+        .login-wrap::before {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 70%);
+            top: -150px; right: -100px;
+        }
+        .login-wrap::after {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(244,63,94,0.1), transparent 70%);
+            bottom: -100px; left: -100px;
+        }
+        .login-card {
+            position: relative; z-index: 2;
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            padding: 50px 40px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            width: 100%; max-width: 430px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        .login-card .logo { justify-content: center; margin-bottom: 10px; }
+        .admin-badge {
+            display: inline-block; padding: 4px 14px;
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--secondary); border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+            margin-bottom: 30px;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+        .login-card h2 { margin-bottom: 30px; font-size: 22px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 14px; }
+        .input-group input {
+            width: 100%; padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px; color: white;
+            font-family: inherit; font-size: 15px;
+            transition: var(--transition);
+        }
+        .input-group input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15); }
+        .login-btn {
+            width: 100%; margin-top: 10px;
+            background: var(--secondary);
+            box-shadow: 0 4px 20px var(--secondary-glow);
+        }
+        .login-btn:hover { background: #E11D48; transform: translateY(-2px); box-shadow: 0 8px 25px var(--secondary-glow); }
+        .back-link { display: block; margin-top: 24px; color: var(--text-muted); font-size: 14px; }
+        .back-link:hover { color: var(--accent); }
+        .error-msg {
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #FDA4AF;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrap">
+        <div class="login-card fade-up visible">
+            <a href="index.html" class="logo">
+                <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
+                ELITE
+            </a>
+            <div class="admin-badge"><i class="fa-solid fa-shield-halved"></i> Khu vực Quản trị</div>
+            <h2>Đăng nhập Admin</h2>
+            <div id="errorMsg" class="error-msg"></div>
+            <form id="loginForm" onsubmit="handleAdminLogin(event)">
+                <div class="input-group">
+                    <label for="admin-user">Tài khoản quản trị</label>
+                    <input type="text" id="admin-user" placeholder="admin" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="admin-pass">Mật khẩu</label>
+                    <input type="password" id="admin-pass" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="loginBtn" class="btn btn-primary login-btn">Đăng nhập</button>
+            </form>
+            <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        // If already logged in as admin, redirect
+        (async () => {
+            const session = await getSession();
+            if (session) {
+                const profile = await getProfile();
+                if (profile && profile.role === 'admin') {
+                    window.location.href = 'admin_dashboard.html';
+                }
+            }
+        })();
+
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const rawUsername = document.getElementById('admin-user').value.trim();
+            const password = document.getElementById('admin-pass').value;
+            
+            // Tự động thêm đuôi email hệ thống
+            const email = rawUsername.includes('@') ? rawUsername : `${rawUsername}@elite.edu.vn`.toLowerCase();
+
+            const btn = document.getElementById('loginBtn');
+            const errEl = document.getElementById('errorMsg');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực...';
+            errEl.style.display = 'none';
+
+            try {
+                await signIn(email, password);
+                const profile = await getProfile();
+
+                if (!profile || profile.role !== 'admin') {
+                    await signOut();
+                    throw new Error('Tài khoản này không có quyền quản trị.');
+                }
+
+                window.location.href = 'admin_dashboard.html';
+            } catch (err) {
+                errEl.textContent = err.message === 'Invalid login credentials'
+                    ? 'Email hoặc mật khẩu không đúng.'
+                    : err.message;
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = 'Đăng nhập';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Học Viên - Elite</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/exercise.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" style="position:fixed;inset:0;background:var(--bg-dark);z-index:9999;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size:32px;color:var(--accent);"></i>
+            <p style="margin-top:15px;color:var(--text-muted);">Đang tải dữ liệu...</p>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <a href="index.html" class="logo">
+            <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
+            ELITE
+        </a>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" data-tab="overview"><i class="fa-solid fa-house"></i> Tổng quan</a></li>
+            <li><a href="student_exercises.html"><i class="fa-solid fa-pen-to-square"></i> Bài tập</a></li>
+            <li><a href="#" data-tab="courses"><i class="fa-solid fa-book-open"></i> Khóa học của tôi</a></li>
+            <li><a href="#" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử học tập</a></li>
+            <li><a href="#" data-tab="evaluations"><i class="fa-solid fa-star"></i> Đánh giá kết quả</a></li>
+        </ul>
+        <div class="sidebar-bottom">
+            <ul class="sidebar-menu">
+                <li><a href="#" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="greeting" id="greetingName">Xin chào! 👋</h1>
+                <p class="greeting-sub">Sẵn sàng cho bài học hôm nay chưa?</p>
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <strong id="headerName">—</strong>
+                    <span id="headerCode">Học viên</span>
+                </div>
+                <div class="avatar" id="headerAvatar">—</div>
+            </div>
+        </div>
+
+        <!-- TAB: Tổng quan -->
+        <div class="tab-content active" id="tab-overview">
+            <div class="overview-stats" id="overviewStats">
+                <div class="ov-stat-card">
+                    <div class="ov-stat-icon" style="background:rgba(59,130,246,0.15);color:var(--accent);"><i class="fa-solid fa-book-open"></i></div>
+                    <div><div class="ov-stat-value" id="statCourses">0</div><div class="ov-stat-label">Khóa học đang học</div></div>
+                </div>
+                <div class="ov-stat-card">
+                    <div class="ov-stat-icon" style="background:rgba(74,222,128,0.15);color:#4ADE80;"><i class="fa-solid fa-check-circle"></i></div>
+                    <div><div class="ov-stat-value" id="statLessons">0</div><div class="ov-stat-label">Bài học đã hoàn thành</div></div>
+                </div>
+                <div class="ov-stat-card">
+                    <div class="ov-stat-icon" style="background:rgba(251,191,36,0.15);color:#FBBF24;"><i class="fa-solid fa-pen-nib"></i></div>
+                    <div><div class="ov-stat-value" id="statExDone">0</div><div class="ov-stat-label">Bài tập đã làm</div></div>
+                </div>
+                <div class="ov-stat-card">
+                    <div class="ov-stat-icon" style="background:rgba(244,63,94,0.15);color:var(--secondary);"><i class="fa-solid fa-list-check"></i></div>
+                    <div><div class="ov-stat-value" id="statExTodo">0</div><div class="ov-stat-label">Bài tập cần làm</div></div>
+                </div>
+            </div>
+            <div class="overview-row">
+                <div class="dashboard-section" style="flex:2;">
+                    <h3><i class="fa-solid fa-fire"></i> Hoạt động gần đây</h3>
+                    <div class="activity-list" id="activityList"><p style="color:var(--text-muted);">Đang tải...</p></div>
+                </div>
+                <div class="dashboard-section" style="flex:1;">
+                    <h3><i class="fa-solid fa-graduation-cap"></i> Khóa học hiện tại</h3>
+                    <div id="overviewCourses"><p style="color:var(--text-muted);">Đang tải...</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Khóa học -->
+        <div class="tab-content" id="tab-courses">
+            <div class="tab-title"><h2>Khóa học của tôi</h2><p>Quản lý và theo dõi tiến trình các khóa học bạn đang tham gia.</p></div>
+            <div class="dash-courses" id="coursesList"><p style="color:var(--text-muted);">Đang tải...</p></div>
+        </div>
+
+        <!-- TAB: Chi tiết khóa học -->
+        <div class="tab-content" id="tab-course-detail">
+            <div class="tab-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h2 id="sdCourseName">Tên khóa học</h2>
+                    <p id="sdCourseTeacher" style="color:var(--text-muted);"><i class="fa-solid fa-user-tie"></i> Giảng viên</p>
+                </div>
+                <button class="btn btn-secondary" onclick="switchTab('courses')">← Lớp của tôi</button>
+            </div>
+            
+            <div class="dashboard-section">
+                <h3><i class="fa-solid fa-chalkboard"></i> Nội dung bài giảng</h3>
+                <div id="sdCourseLessonsList" style="margin-top: 15px;">
+                    <p style="color:var(--text-muted);">Đang tải...</p>
+                </div>
+            </div>
+
+            <div class="dashboard-section" style="margin-top: 20px;">
+                <h3><i class="fa-solid fa-list-check"></i> Bài tập khóa học</h3>
+                <div class="exercise-cards-grid" id="sdCourseExercisesList" style="margin-top: 15px;">
+                    <p style="color:var(--text-muted);">Đang tải...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Lịch sử -->
+        <div class="tab-content" id="tab-history">
+            <div class="tab-title"><h2>Lịch sử học tập</h2><p>Xem lại toàn bộ các buổi học bạn đã tham gia.</p></div>
+            <div class="dashboard-section">
+                <div class="table-wrap">
+                    <table class="dash-table">
+                        <thead><tr><th>Ngày học</th><th>Khóa học</th><th>Bài học</th><th>Thời gian</th><th>Trạng thái</th></tr></thead>
+                        <tbody id="historyTable"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Đang tải...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Đánh giá -->
+        <div class="tab-content" id="tab-evaluations">
+            <div class="tab-title"><h2>Đánh giá kết quả</h2><p>Bảng điểm, nhận xét từ giảng viên và lộ trình cải thiện.</p></div>
+            <div id="evalsList"><p style="color:var(--text-muted);">Đang tải...</p></div>
+        </div>
+
+    </main>
+
+    <!-- Modal cho học viên xem bài giảng -->
+    <div class="modal-overlay" id="lessonDetailModalSD" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+        <div class="modal-container" style="background:#1e293b;border-radius:12px;width:100%;max-width:1100px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+            <div class="modal-header" style="padding:15px 25px;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+                <h3 id="lessonModalTitleSD" style="font-size:20px;font-weight:700;">Chi tiết buổi học</h3>
+                <button onclick="closeModal('lessonDetailModalSD')" style="background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding:25px;overflow-y:auto;flex-grow:1;" id="lessonModalBodySD">
+                <p>Đang tải...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        let currentProfile = null;
+        let globalEnrollments = [];
+        let currentUserId = null;
+
+        // Tab switching
+        document.querySelectorAll('.sidebar-menu a[data-tab]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabId = link.getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            const link = document.querySelector(`.sidebar-menu a[data-tab="${tabId}"]`);
+            if (link) link.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            const tabContent = document.getElementById('tab-' + tabId);
+            if (tabContent) tabContent.classList.add('active');
+            
+            // Revert hash without scrolling
+            history.replaceState(null, null, ' ' + (tabId ? '#' + tabId : ''));
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await signOut();
+            window.location.href = 'login.html';
+        });
+
+        // Initialize
+        (async () => {
+            currentProfile = await requireAuth('student');
+            if (!currentProfile) return;
+
+            const session = await getSession();
+            currentUserId = session.user.id;
+            const userEmail = session.user.email;
+
+            // Set profile info
+            const initials = currentProfile.full_name.split(' ').map(w => w[0]).join('').slice(-2).toUpperCase();
+            document.getElementById('greetingName').textContent = `Xin chào, ${currentProfile.full_name}! 👋`;
+            document.getElementById('headerName').textContent = currentProfile.full_name;
+            document.getElementById('headerCode').textContent = currentProfile.student_code || 'Học viên';
+            document.getElementById('headerAvatar').textContent = initials;
+
+            document.getElementById('headerAvatar').textContent = initials;
+
+            // Fetch data
+            const [enrollments, history, evals, allExercises, submissions] = await Promise.all([
+                getStudentCourses(currentUserId),
+                getLearningHistory(currentUserId),
+                getEvaluations(currentUserId),
+                getAllExercises(),
+                getStudentSubmissions(currentUserId)
+            ]);
+
+            // Overview stats
+            globalEnrollments = enrollments;
+            document.getElementById('statCourses').textContent = enrollments.filter(e => e.progress < 100).length;
+            document.getElementById('statLessons').textContent = history.filter(h => h.status === 'completed').length;
+            
+            // Calculate Exercises Done and To-Do
+            const enrolledCourseNames = enrollments.map(e => e.courses?.name);
+            const myExercises = allExercises.filter(ex => ex.grade === 'Chung' || enrolledCourseNames.includes(ex.grade));
+            const doneExercisesCount = submissions.length;
+            const todoExercisesCount = Math.max(0, myExercises.length - doneExercisesCount);
+            
+            document.getElementById('statExDone').textContent = doneExercisesCount;
+            document.getElementById('statExTodo').textContent = todoExercisesCount;
+
+            // Combine Activity list
+            let combinedActivities = [];
+            history.forEach(h => {
+                combinedActivities.push({
+                    title: 'Đã hoàn thành: ' + h.lesson_name,
+                    subtitle: `${h.courses?.name || ''} • Điểm danh học tập`,
+                    date: new Date(h.learned_at)
+                });
+            });
+            submissions.forEach(s => {
+                combinedActivities.push({
+                    title: `Nộp bài: ${s.exercises?.title || 'Bài tập'}`,
+                    subtitle: `Điểm: ${s.total_score}/${s.max_score} • Bài tập AI`,
+                    date: new Date(s.submitted_at)
+                });
+            });
+            combinedActivities.sort((a, b) => b.date - a.date);
+
+            const actHtml = combinedActivities.slice(0, 5).map(act => `
+                <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div>
+                        <p><strong>${act.title}</strong></p>
+                        <span>${act.subtitle} • ${act.date.toLocaleDateString('vi-VN')}</span>
+                    </div>
+                </div>`).join('');
+            document.getElementById('activityList').innerHTML = actHtml || '<p style="color:var(--text-muted);">Chưa có hoạt động.</p>';
+
+            // Overview courses
+            const ovCourseHtml = enrollments.filter(e => e.progress < 100).map(e => `
+                <div class="upcoming-item" style="cursor:pointer;" onclick="viewCourseDetail('${e.courses?.id}')">
+                    <div class="upcoming-date">
+                        <span class="day" style="font-size:18px;color:var(--accent);">${e.progress}%</span>
+                    </div>
+                    <div>
+                        <strong>${e.courses?.name || ''}</strong>
+                        <p>${e.courses?.teacher_name || ''}</p>
+                    </div>
+                </div>`).join('');
+            document.getElementById('overviewCourses').innerHTML = ovCourseHtml || '<p style="color:var(--text-muted);">Không có khóa học đang học.</p>';
+
+            // Courses tab
+            const coursesHtml = enrollments.map(e => `
+                <div class="dash-course-card">
+                    <div class="dcc-header">
+                        <img src="assets/english_course.png" alt="${e.courses?.name}" style="${e.progress >= 100 ? 'filter:hue-rotate(40deg);' : ''}">
+                        <div>
+                            <h4>${e.courses?.name || ''}</h4>
+                            <p>${e.courses?.teacher_name || ''}</p>
+                        </div>
+                    </div>
+                    <div class="dcc-meta">
+                        <div><i class="fa-solid fa-calendar"></i> ${formatDate(e.enrolled_at)}</div>
+                        <div><i class="fa-solid fa-layer-group"></i> ${e.courses?.total_lessons || 0} bài học</div>
+                    </div>
+                    <div class="progress-info">
+                        <span>Tiến độ</span>
+                        <span class="progress-pct" style="color:${e.progress >= 100 ? '#4ADE80' : 'var(--accent)'};">${e.progress}%</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${e.progress}%;${e.progress >= 100 ? 'background:#4ADE80;' : ''}"></div></div>
+                    <a href="#" onclick="event.preventDefault(); viewCourseDetail('${e.courses?.id}');" class="btn ${e.progress >= 100 ? 'btn-outline' : 'btn-primary'}" style="width:100%;margin-top:15px;padding:10px;font-size:14px;">${e.progress >= 100 ? 'Xem lại lớp học' : 'Vào lớp học'}</a>
+                </div>`).join('');
+            document.getElementById('coursesList').innerHTML = coursesHtml || '<p style="color:var(--text-muted);">Chưa đăng ký khóa học nào.</p>';
+
+            // History tab
+            const histHtml = history.map(h => `
+                <tr>
+                    <td>${formatDate(h.learned_at)}</td>
+                    <td>${h.courses?.name || ''}</td>
+                    <td>${h.lesson_name}</td>
+                    <td>${h.duration_minutes} phút</td>
+                    <td><span class="dash-status status-completed">Hoàn thành</span></td>
+                </tr>`).join('');
+            document.getElementById('historyTable').innerHTML = histHtml || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Chưa có lịch sử.</td></tr>';
+
+            // Evaluations tab
+            const evalHtml = evals.map(ev => `
+                <div class="eval-card">
+                    <div class="eval-header">
+                        <div><strong>${ev.title}</strong><span>Ngày thi: ${formatDate(ev.evaluated_at)}</span></div>
+                        <div class="eval-overall">${ev.overall_score}</div>
+                    </div>
+                    <div class="eval-scores">
+                        <div class="eval-score-item"><div class="eval-score-ring" style="--score-color:#60A5FA;"><span>${ev.reading}</span></div><p>Reading</p></div>
+                        <div class="eval-score-item"><div class="eval-score-ring" style="--score-color:#4ADE80;"><span>${ev.listening}</span></div><p>Listening</p></div>
+                        <div class="eval-score-item"><div class="eval-score-ring" style="--score-color:#FBBF24;"><span>${ev.writing}</span></div><p>Writing</p></div>
+                        <div class="eval-score-item"><div class="eval-score-ring" style="--score-color:#F472B6;"><span>${ev.speaking}</span></div><p>Speaking</p></div>
+                    </div>
+                    <div class="eval-comment">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>${ev.comment}</p>
+                        <strong>— ${ev.teacher_name}</strong>
+                    </div>
+                </div>`).join('');
+            document.getElementById('evalsList').innerHTML = evalHtml || '<p style="color:var(--text-muted);">Chưa có đánh giá.</p>';
+
+            // Hide loading
+            document.getElementById('loadingOverlay').style.display = 'none';
+
+            // Check hash for specific tab
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const tabLink = document.querySelector(`.sidebar-menu a[data-tab="${hash}"]`);
+                if (tabLink) {
+                    tabLink.click();
+                }
+            }
+        })();
+
+        // Removed saveSettings() as students no longer have permission
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('vi-VN');
+        }
+
+        async function viewCourseDetail(courseId) {
+            const enrollment = globalEnrollments.find(e => e.courses && e.courses.id === courseId);
+            if (!enrollment || !enrollment.courses) return;
+            
+            document.getElementById('sdCourseName').textContent = enrollment.courses.name;
+            document.getElementById('sdCourseTeacher').innerHTML = `<i class="fa-solid fa-user-tie"></i> Giảng viên: ${enrollment.courses.teacher_name || 'Đang cập nhật'}`;
+            
+            document.getElementById('sdCourseLessonsList').innerHTML = '<p style="color:var(--text-muted);">Đang tải bài giảng...</p>';
+            switchTab('course-detail');
+            
+            try {
+                const lessons = await getCourseLessons(courseId);
+                if (!lessons || lessons.length === 0) {
+                    document.getElementById('sdCourseLessonsList').innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;">Giảng viên chưa tải lên bài giảng nào.</p>';
+                } else {
+                    document.getElementById('sdCourseLessonsList').innerHTML = lessons.map(l => {
+                        window.cachedLessons = window.cachedLessons || {};
+                        window.cachedLessons[l.id] = l;
+                        const dateStr = l.lesson_date ? new Date(l.lesson_date).toLocaleDateString('vi-VN', {weekday:'short', day:'2-digit', month:'2-digit', year:'numeric'}) : '';
+                        return `
+                        <div class="lesson-card" style="cursor:pointer;" onclick="viewLessonDetailInline('${l.id}')">
+                            <div class="lc-header" style="margin-bottom:0;">
+                                <div style="display:flex;align-items:center;flex:1;">
+                                    <span class="lc-number">${l.lesson_number}</span>
+                                    <span class="lc-title">${l.title || 'Buổi ' + l.lesson_number}</span>
+                                    ${dateStr ? `<span class="lc-date" style="margin-right:15px;"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>` : ''}
+                                    <i class="fa-solid fa-play" style="margin-left:auto; margin-right:10px; color:var(--accent); font-size: 14px;"></i>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+            } catch (e) {
+                document.getElementById('sdCourseLessonsList').innerHTML = '<p style="color:#ef4444;">Lỗi tải bài giảng: ' + e.message + '</p>';
+            }
+
+            document.getElementById('sdCourseExercisesList').innerHTML = '<p style="color:var(--text-muted);">Đang tải bài tập...</p>';
+            try {
+                const allExercises = await getAllExercises();
+                const exercises = allExercises.filter(ex => ex.grade === enrollment.courses.name);
+                
+                if (!exercises || exercises.length === 0) {
+                    document.getElementById('sdCourseExercisesList').innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;">Không có bài tập nào cho khóa học này.</p>';
+                } else {
+                    let submissions = {};
+                    try {
+                        const subs = await getStudentSubmissions(currentUserId);
+                        subs.forEach(s => { submissions[s.exercise_id] = s; });
+                    } catch(e) {}
+                    
+                    const gradeExs = exercises.slice().reverse(); // asc order based on created_at
+                    const lockedIds = new Set();
+                    let prevPassed = true;
+                    for (const ex of gradeExs) {
+                        if (!prevPassed) {
+                            lockedIds.add(ex.id);
+                        } else {
+                            const sub = submissions[ex.id];
+                            if (!sub || (sub.total_score / Math.max(1, sub.max_score)) < 0.8) {
+                                prevPassed = false;
+                            }
+                        }
+                    }
+
+                    document.getElementById('sdCourseExercisesList').innerHTML = exercises.map(ex => {
+                        const sub = submissions[ex.id];
+                        const isLocked = lockedIds.has(ex.id);
+                        const isPassed = sub && (sub.total_score / Math.max(1, sub.max_score)) >= 0.8;
+
+                        return `
+                        <div class="exercise-card" ${isLocked ? 'style="opacity:0.6;cursor:not-allowed;" title="Vui lòng đạt 80% bài trước để mở khóa"' : `style="cursor:pointer;" onclick="window.location.href='student_exercises.html'"`}>
+                            <div class="card-header">
+                                <h3 class="card-title">${ex.title}</h3>
+                                ${isLocked ? '<span class="ex-badge ex-badge-rose">🔒 Khóa</span>' : 
+                                  (isPassed ? '<span class="ex-badge ex-badge-emerald">✓ Đã Pass</span>' : 
+                                  (sub ? '<span class="ex-badge ex-badge-amber">Chưa Pass</span>' : '<span class="ex-badge ex-badge-blue">Mới</span>'))}
+                            </div>
+                            <p class="card-desc">${ex.description || ''}</p>
+                            <div class="card-meta">
+                                <span>📋 ${ex.question_count} câu</span>
+                                <span class="ex-badge ${ex.difficulty === 'Dễ' ? 'ex-badge-emerald' : ex.difficulty === 'Trung bình' ? 'ex-badge-amber' : 'ex-badge-rose'}">${ex.difficulty}</span>
+                            </div>
+                            ${sub ? `
+                            <div style="margin-top:10px;display:flex;align-items:center;gap:8px;">
+                                <div class="ex-progress-bar" style="flex:1;">
+                                    <div class="ex-progress-fill" style="width:${(sub.total_score/Math.max(1, sub.max_score))*100}%; background: ${isPassed ? '#10b981' : '#f59e0b'};"></div>
+                                </div>
+                                <span style="font-size:13px;font-weight:700;color:${isPassed ? '#10b981' : '#f59e0b'};">${sub.total_score}/${sub.max_score}</span>
+                            </div>` : ''}
+                        </div>`;
+                    }).join('');
+                }
+            } catch (e) {
+                document.getElementById('sdCourseExercisesList').innerHTML = '<p style="color:#ef4444;grid-column:1/-1;">Lỗi tải bài tập: ' + e.message + '</p>';
+            }
+        }
+
+        // --- View Lesson Modal Logic ---
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { 
+            document.getElementById(id).style.display = 'none';
+            if (id === 'lessonDetailModalSD') {
+                document.getElementById('lessonModalBodySD').innerHTML = ''; // Dừng phát video
+            }
+        }
+        
+        function convertToEmbedUrl(url) {
+            if (!url) return '';
+            try {
+                let videoId = '';
+                if (url.includes('youtube.com/watch')) {
+                    videoId = new URL(url).searchParams.get('v');
+                } else if (url.includes('youtu.be/')) {
+                    videoId = url.split('youtu.be/')[1].split('?')[0];
+                } else if (url.includes('youtube.com/embed/')) {
+                    return url; // already embed
+                }
+                if (videoId) return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                return url; 
+            } catch(e) { return url; }
+        }
+        
+        window.cachedLessons = {};
+        function viewLessonDetailInline(id) {
+            const l = window.cachedLessons[id];
+            if(!l) return;
+            document.getElementById('lessonModalTitleSD').textContent = l.title || ('Buổi ' + l.lesson_number);
+            
+            let html = '';
+            
+            if (l.video_url) {
+                const embedUrl = convertToEmbedUrl(l.video_url);
+                if (embedUrl.includes('youtube.com/embed')) {
+                    // It's a YouTube video, so use iframe
+                    html += `
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-bottom: 20px; background: #000;">
+                        <iframe src="${embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+                    </div>`;
+                } else {
+                    html += `<a href="${l.video_url}" target="_blank" class="btn btn-primary" style="display:inline-block; margin-bottom:20px; width:100%; text-align:center;"><i class="fa-solid fa-play"></i> Mở link Video bài giảng</a>`;
+                }
+            } else {
+                html += `<div style="padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.05); text-align:center; margin-bottom: 20px;"><i class="fa-solid fa-video-slash" style="font-size:24px; opacity:0.5; margin-bottom:8px;"></i><p style="color:var(--text-muted); font-size:13px;">Chưa có video bài giảng</p></div>`;
+            }
+
+            if (l.summary) {
+                html += `
+                <div style="background: rgba(15,23,42,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 12px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;"><i class="fa-solid fa-book-open"></i> Tóm tắt Nội dung</h4>
+                    <p style="white-space: pre-wrap; font-size:14px; line-height:1.5;">${l.summary}</p>
+                </div>`;
+            }
+            if (l.preparation) {
+                 html += `
+                <div style="background: rgba(15,23,42,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #10b981; margin-bottom: 8px;"><i class="fa-solid fa-clipboard-check"></i> Chuẩn bị tiếp theo</h4>
+                    <p style="white-space: pre-wrap; font-size:14px; line-height:1.5;">${l.preparation}</p>
+                </div>`;
+            }
+
+            document.getElementById('lessonModalBodySD').innerHTML = html;
+            openModal('lessonDetailModalSD');
+        }
+    </script>
+</body>
+</html>
