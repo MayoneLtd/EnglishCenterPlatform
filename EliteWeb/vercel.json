@@ -1,10 +1,4 @@
 {
-  "rewrites": [
-    { "source": "/student/exercises", "destination": "/student_exercises.html" },
-    { "source": "/student", "destination": "/student_dashboard.html" },
-    { "source": "/admin/exercises", "destination": "/admin_exercises.html" },
-    { "source": "/admin/login", "destination": "/admin_login.html" },
-    { "source": "/admin", "destination": "/admin_dashboard.html" },
-    { "source": "/login", "destination": "/login.html" }
-  ]
+  "cleanUrls": true,
+  "trailingSlash": false
 }
