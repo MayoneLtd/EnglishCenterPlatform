@@ -21,13 +21,13 @@
     </div>
 
     <aside class="sidebar">
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
             <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
             ELITE
         </a>
         <ul class="sidebar-menu">
             <li><a href="#" class="active" data-tab="overview"><i class="fa-solid fa-house"></i> Tổng quan</a></li>
-            <li><a href="student_exercises.html"><i class="fa-solid fa-pen-to-square"></i> Bài tập</a></li>
+            <li><a href="/student/exercises"><i class="fa-solid fa-pen-to-square"></i> Bài tập</a></li>
             <li><a href="#" data-tab="courses"><i class="fa-solid fa-book-open"></i> Khóa học của tôi</a></li>
             <li><a href="#" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử học tập</a></li>
             <li><a href="#" data-tab="evaluations"><i class="fa-solid fa-star"></i> Đánh giá kết quả</a></li>
@@ -184,7 +184,7 @@
         document.getElementById('logoutBtn').addEventListener('click', async (e) => {
             e.preventDefault();
             await signOut();
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         });
 
         // Initialize
@@ -415,7 +415,7 @@
                         const isPassed = sub && (sub.total_score / Math.max(1, sub.max_score)) >= 0.8;
 
                         return `
-                        <div class="exercise-card" ${isLocked ? 'style="opacity:0.6;cursor:not-allowed;" title="Vui lòng đạt 80% bài trước để mở khóa"' : `style="cursor:pointer;" onclick="window.location.href='student_exercises.html'"`}>
+                        <div class="exercise-card" ${isLocked ? 'style="opacity:0.6;cursor:not-allowed;" title="Vui lòng đạt 80% bài trước để mở khóa"' : `style="cursor:pointer;" onclick="window.location.href='/student/exercises'"`}>
                             <div class="card-header">
                                 <h3 class="card-title">${ex.title}</h3>
                                 ${isLocked ? '<span class="ex-badge ex-badge-rose">🔒 Khóa</span>' : 

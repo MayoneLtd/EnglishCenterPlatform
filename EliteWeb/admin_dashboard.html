@@ -26,7 +26,7 @@
     </div>
 
     <aside class="sidebar admin-sidebar">
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
             <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
             ELITE
         </a>
@@ -36,7 +36,7 @@
             <li><a href="#" data-tab="students"><i class="fa-solid fa-user-graduate"></i> Quản lý học viên</a></li>
             <li><a href="#" data-tab="courses"><i class="fa-solid fa-book-open"></i> Quản lý khóa học</a></li>
             <li><a href="#" data-tab="teachers"><i class="fa-solid fa-chalkboard-user"></i> Giảng viên</a></li>
-            <li><a href="admin_exercises.html"><i class="fa-solid fa-robot"></i> Bài tập AI</a></li>
+            <li><a href="/admin/exercises"><i class="fa-solid fa-robot"></i> Bài tập AI</a></li>
             <li><a href="#" data-tab="ai-settings"><i class="fa-solid fa-key"></i> Cài đặt AI</a></li>
         </ul>
         <div class="sidebar-bottom">
@@ -569,7 +569,7 @@
         document.getElementById('logoutBtn').addEventListener('click', async (e) => {
             e.preventDefault();
             await signOut();
-            window.location.href = 'admin_login.html';
+            window.location.href = '/admin/login';
         });
 
         // ===== Global API Key =====

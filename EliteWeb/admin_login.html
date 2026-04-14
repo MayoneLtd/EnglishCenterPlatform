@@ -86,7 +86,7 @@
 <body>
     <div class="login-wrap">
         <div class="login-card fade-up visible">
-            <a href="index.html" class="logo">
+            <a href="/" class="logo">
                 <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
                 ELITE
             </a>
@@ -104,7 +104,7 @@
                 </div>
                 <button type="submit" id="loginBtn" class="btn btn-primary login-btn">Đăng nhập</button>
             </form>
-            <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
+            <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
         </div>
     </div>
 
@@ -117,7 +117,7 @@
             if (session) {
                 const profile = await getProfile();
                 if (profile && profile.role === 'admin') {
-                    window.location.href = 'admin_dashboard.html';
+                    window.location.href = '/admin';
                 }
             }
         })();
@@ -146,7 +146,7 @@
                     throw new Error('Tài khoản này không có quyền quản trị.');
                 }
 
-                window.location.href = 'admin_dashboard.html';
+                window.location.href = '/admin';
             } catch (err) {
                 errEl.textContent = err.message === 'Invalid login credentials'
                     ? 'Email hoặc mật khẩu không đúng.'

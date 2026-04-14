@@ -22,7 +22,7 @@
 
     <!-- Sidebar -->
     <aside class="sidebar">
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
             <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
             ELITE
         </a>
@@ -476,7 +476,7 @@
         document.getElementById('logoutBtn').addEventListener('click', async (e) => {
             e.preventDefault();
             await signOut();
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         });
 
         // ===== Init =====

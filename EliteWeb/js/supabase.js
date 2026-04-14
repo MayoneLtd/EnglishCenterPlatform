@@ -59,13 +59,13 @@ async function getProfile() {
 async function requireAuth(allowedRole) {
     const session = await getSession();
     if (!session) {
-        window.location.href = allowedRole === 'admin' ? 'admin_login.html' : 'login.html';
+        window.location.href = allowedRole === 'admin' ? '/admin/login' : '/login';
         return null;
     }
     const profile = await getProfile();
     if (!profile || (allowedRole && profile.role !== allowedRole)) {
         await signOut();
-        window.location.href = allowedRole === 'admin' ? 'admin_login.html' : 'login.html';
+        window.location.href = allowedRole === 'admin' ? '/admin/login' : '/login';
         return null;
     }
     return profile;

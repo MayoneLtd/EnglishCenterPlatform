@@ -1,0 +1,11 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/student", "destination": "/student_dashboard.html" },
+    { "source": "/student/exercises", "destination": "/student_exercises.html" },
+    { "source": "/admin", "destination": "/admin_dashboard.html" },
+    { "source": "/admin/exercises", "destination": "/admin_exercises.html" },
+    { "source": "/admin/login", "destination": "/admin_login.html" },
+    { "source": "/login", "destination": "/login.html" }
+  ]
+}
