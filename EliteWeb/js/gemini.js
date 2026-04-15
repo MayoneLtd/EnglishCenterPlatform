@@ -14,7 +14,7 @@ function initGemini(apiKey) {
     // Dynamic import for ES Module
     import('https://esm.run/@google/generative-ai').then(({ GoogleGenerativeAI }) => {
         genAI = new GoogleGenerativeAI(apiKey);
-        model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+        model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
         console.log('✅ Gemini AI initialized');
     }).catch(err => {
         console.error('❌ Failed to init Gemini:', err);
