@@ -416,11 +416,18 @@ async function setAppSetting(key, value) {
 }
 
 async function getGeminiApiKey() {
-    return await getAppSetting('gemini_api_key');
+    // Lấy từ biến môi trường (Vite/Node) hoặc cấu hình window (Vanilla JS)
+    if (typeof process !== 'undefined' && process.env && process.env.GEMINI_API_KEY) {
+        return process.env.GEMINI_API_KEY;
+    }
+    if (typeof window.ENV !== 'undefined' && window.ENV.GEMINI_API_KEY) {
+        return window.ENV.GEMINI_API_KEY;
+    }
+    return ''; // Placeholder
 }
 
 async function setGeminiApiKey(value) {
-    await setAppSetting('gemini_api_key', value);
+    console.warn("setGeminiApiKey is deprecated. Update your environment variables instead.");
 }
 
 // ===== Teacher Helpers =====

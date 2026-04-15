@@ -37,7 +37,6 @@
             <li><a href="#" data-tab="courses"><i class="fa-solid fa-book-open"></i> Quản lý khóa học</a></li>
             <li><a href="#" data-tab="teachers"><i class="fa-solid fa-chalkboard-user"></i> Giảng viên</a></li>
             <li><a href="/admin/exercises"><i class="fa-solid fa-robot"></i> Bài tập AI</a></li>
-            <li><a href="#" data-tab="ai-settings"><i class="fa-solid fa-key"></i> Cài đặt AI</a></li>
         </ul>
         <div class="sidebar-bottom">
             <ul class="sidebar-menu">
@@ -331,48 +330,6 @@
             </div>
         </div>
 
-        <!-- TAB: Cài đặt AI -->
-        <div class="tab-content" id="tab-ai-settings">
-            <div class="tab-title">
-                <h2>🔑 Cài đặt Gemini AI</h2>
-                <p>Nhập API Key một lần duy nhất. Toàn bộ hệ thống (Admin & Học viên) sẽ sử dụng chung API Key này.</p>
-            </div>
-            <div class="dashboard-section" style="max-width:640px;">
-                <div style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px;">Gemini API
-                        Key</label>
-                    <div style="display:flex;gap:8px;">
-                        <input type="password" class="form-control" id="globalApiKeyInput"
-                            placeholder="Dán Gemini API Key tại đây..." style="flex:1;">
-                        <button class="btn btn-primary" id="saveGlobalApiKeyBtn">Lưu Key</button>
-                    </div>
-                </div>
-                <div id="globalApiKeyStatus" style="margin-bottom:16px;"></div>
-                <div
-                    style="padding:14px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.12);border-radius:10px;">
-                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">👉 Lấy API key miễn phí tại <a
-                            href="https://aistudio.google.com/apikey" target="_blank"
-                            style="color:var(--accent);">Google AI Studio</a></p>
-                    <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
-                        <span
-                            style="background:rgba(59,130,246,0.12);color:var(--accent);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">1.
-                            Đăng nhập Google AI Studio</span>
-                        <span
-                            style="background:rgba(59,130,246,0.12);color:var(--accent);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">2.
-                            Nhấn "Create API Key"</span>
-                        <span
-                            style="background:rgba(59,130,246,0.12);color:var(--accent);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">3.
-                            Copy & Dán ở trên</span>
-                    </div>
-                </div>
-                <div
-                    style="margin-top:16px;padding:12px;border-radius:10px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.12);">
-                    <p style="font-size:13px;color:var(--text-muted);">💡 <strong>API Key này sẽ được dùng
-                            chung</strong> bởi cả Admin (tạo bài bằng AI) và Học viên (AI chấm điểm). Học viên không cần
-                        nhập Key.</p>
-                </div>
-            </div>
-        </div>
 
         <!-- ===== MODALS ===== -->
         <!-- Student Modal -->
@@ -688,45 +645,13 @@
             window.location.href = '/admin/login';
         });
 
-        // ===== Global API Key =====
-        document.getElementById('saveGlobalApiKeyBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('saveGlobalApiKeyBtn');
-            const key = document.getElementById('globalApiKeyInput').value.trim();
-            if (!key) { alert('Vui lòng nhập API Key!'); return; }
-            btn.disabled = true;
-            btn.textContent = 'Đang lưu...';
-            try {
-                await setGeminiApiKey(key);
-                // Also cache locally for admin exercises page
-                localStorage.setItem('gemini_api_key', key);
-                document.getElementById('globalApiKeyStatus').innerHTML = '<span style="color:#10b981;font-size:13px;">✅ API Key đã lưu thành công! Toàn bộ hệ thống sẵn sàng sử dụng AI.</span>';
-            } catch (e) {
-                document.getElementById('globalApiKeyStatus').innerHTML = '<span style="color:#ef4444;font-size:13px;">❌ Lỗi lưu: ' + e.message + '</span>';
-            }
-            btn.disabled = false;
-            btn.textContent = 'Lưu Key';
-        });
-
-        async function loadGlobalApiKey() {
-            try {
-                const key = await getGeminiApiKey();
-                if (key) {
-                    document.getElementById('globalApiKeyInput').value = key;
-                    localStorage.setItem('gemini_api_key', key);
-                    document.getElementById('globalApiKeyStatus').innerHTML = '<span style="color:#10b981;font-size:13px;">✅ API Key đã được cấu hình. AI sẵn sàng.</span>';
-                }
-            } catch (e) {
-                console.warn('Could not load API key from app_settings:', e.message);
-            }
-        }
-
+        // Note: Gemini Global settings have been removed from runtime DB loading
         // Initialize
         (async () => {
             const profile = await requireAuth('admin');
             if (!profile) return;
             document.getElementById('adminName').textContent = profile.full_name || 'Admin';
             await loadData();
-            loadGlobalApiKey();
             document.getElementById('loadingOverlay').style.display = 'none';
         })();
 
