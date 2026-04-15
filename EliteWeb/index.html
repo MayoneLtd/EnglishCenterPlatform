@@ -12,6 +12,12 @@
 </head>
 
 <body>
+    <!-- Cursor Glow -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Floating Particles -->
+    <canvas id="particleCanvas" class="particle-canvas"></canvas>
+
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container nav-container">
@@ -35,12 +41,17 @@
     <!-- Hero Section -->
     <header id="hero" class="hero">
         <div class="hero-bg"></div>
+        <div class="hero-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
         <div class="container hero-content">
-            <h1 class="fade-up">Khơi dậy tiềm năng ngôn ngữ của bạn</h1>
+            <h1 class="reveal-text" data-reveal>Khơi dậy tiềm năng ngôn ngữ của bạn</h1>
             <p class="fade-up delay-1">Chương trình đào tạo tiếng Anh cao cấp chuẩn quốc tế. Đội ngũ bản ngữ, cơ sở vật
                 chất hiện đại, cam kết đầu ra.</p>
             <div class="hero-btns fade-up delay-2">
-                <a href="#courses" class="btn btn-primary btn-large">Khám phá khóa học <i
+                <a href="#courses" class="btn btn-primary btn-large magnetic-btn">Khám phá khóa học <i
                         class="fa-solid fa-arrow-right"></i></a>
                 <a href="#features" class="btn btn-secondary btn-large">Tìm hiểu thêm</a>
             </div>
@@ -54,85 +65,167 @@
     <!-- Partners / Stats -->
     <section class="stats section">
         <div class="container stats-grid">
-            <div class="stat-card fade-up">
-                <h2>10k+</h2>
+            <div class="stat-card fade-up" data-count="10000">
+                <h2 class="counter" data-target="10000">0</h2>
+                <span class="stat-suffix">+</span>
                 <p>Học viên thành đạt</p>
             </div>
-            <div class="stat-card fade-up delay-1">
-                <h2>50+</h2>
+            <div class="stat-card fade-up delay-1" data-count="50">
+                <h2 class="counter" data-target="50">0</h2>
+                <span class="stat-suffix">+</span>
                 <p>Giảng viên bản ngữ</p>
             </div>
-            <div class="stat-card fade-up delay-2">
-                <h2>98%</h2>
+            <div class="stat-card fade-up delay-2" data-count="98">
+                <h2 class="counter" data-target="98">0</h2>
+                <span class="stat-suffix">%</span>
                 <p>Đạt chuẩn đầu ra</p>
             </div>
-            <div class="stat-card fade-up delay-3">
-                <h2>03</h2>
+            <div class="stat-card fade-up delay-3" data-count="3">
+                <h2 class="counter" data-target="3">0</h2>
+                <span class="stat-suffix"></span>
                 <p>Cơ sở chuẩn 5 sao</p>
             </div>
         </div>
     </section>
 
-    <!-- Courses Section -->
+    <!-- Infinite Marquee -->
+    <section class="marquee-section">
+        <div class="marquee-track">
+            <div class="marquee-content">
+                <span class="marquee-item"><i class="fa-solid fa-star"></i> IELTS 7.0+</span>
+                <span class="marquee-item"><i class="fa-solid fa-globe"></i> Giao tiếp Quốc tế</span>
+                <span class="marquee-item"><i class="fa-solid fa-briefcase"></i> Doanh nghiệp</span>
+                <span class="marquee-item"><i class="fa-solid fa-graduation-cap"></i> Du học</span>
+                <span class="marquee-item"><i class="fa-solid fa-certificate"></i> TOEIC 900+</span>
+                <span class="marquee-item"><i class="fa-solid fa-users"></i> Lớp nhỏ 1:8</span>
+                <span class="marquee-item"><i class="fa-solid fa-laptop"></i> Online & Offline</span>
+                <span class="marquee-item"><i class="fa-solid fa-award"></i> Cam kết đầu ra</span>
+            </div>
+            <div class="marquee-content" aria-hidden="true">
+                <span class="marquee-item"><i class="fa-solid fa-star"></i> IELTS 7.0+</span>
+                <span class="marquee-item"><i class="fa-solid fa-globe"></i> Giao tiếp Quốc tế</span>
+                <span class="marquee-item"><i class="fa-solid fa-briefcase"></i> Doanh nghiệp</span>
+                <span class="marquee-item"><i class="fa-solid fa-graduation-cap"></i> Du học</span>
+                <span class="marquee-item"><i class="fa-solid fa-certificate"></i> TOEIC 900+</span>
+                <span class="marquee-item"><i class="fa-solid fa-users"></i> Lớp nhỏ 1:8</span>
+                <span class="marquee-item"><i class="fa-solid fa-laptop"></i> Online & Offline</span>
+                <span class="marquee-item"><i class="fa-solid fa-award"></i> Cam kết đầu ra</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section - 6 Courses -->
     <section id="courses" class="section courses">
         <div class="container">
             <div class="section-header fade-up">
                 <span class="badge">Chương trình đào tạo</span>
                 <h2>Khám phá các khóa học nổi bật</h2>
-                <p>Chương trình được thiết kế chuẩn quốc tế, đáp ứng mọi nhu cầu từ giao tiếp đến luyện thi chứng chỉ.
-                </p>
+                <p>Chương trình được thiết kế chuẩn quốc tế, đáp ứng mọi nhu cầu từ giao tiếp đến luyện thi chứng chỉ.</p>
             </div>
 
             <div class="courses-grid">
                 <!-- Course 1 -->
-                <div class="course-card fade-up">
+                <div class="course-card perspective-card fade-up stagger-item">
+                    <div class="card-shine"></div>
                     <div class="course-img">
                         <img src="assets/english_course.png" alt="English Course">
                         <div class="course-badge">Phổ biến nhất</div>
                     </div>
                     <div class="course-info">
                         <h3>Luyện thi IELTS</h3>
-                        <p>Lộ trình tối ưu hóa giúp đạt Target 7.0+, học thuật chuyên sâu và chiến thuật làm bài hiệu
-                            quả.</p>
-                        <ul class="course-features">
-                            <li><i class="fa-solid fa-check"></i> Cam kết đầu ra bằng văn bản</li>
-                            <li><i class="fa-solid fa-check"></i> Chấm chữa Speaking/Writing 1-1</li>
-                        </ul>
-                        <a href="#" class="btn btn-outline course-btn">Xem chi tiết</a>
+                        <p>Lộ trình tối ưu hóa giúp đạt Target 7.0+, học thuật chuyên sâu và chiến thuật làm bài hiệu quả.</p>
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-clock"></i> 4-6 tháng</span>
+                            <span><i class="fa-solid fa-users"></i> 1:8</span>
+                        </div>
+                        <a href="/course-detail" class="btn btn-outline course-btn">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
 
                 <!-- Course 2 -->
-                <div class="course-card fade-up delay-1">
+                <div class="course-card perspective-card fade-up stagger-item">
+                    <div class="card-shine"></div>
                     <div class="course-img">
                         <img src="assets/english_course.png" alt="Communication">
                     </div>
                     <div class="course-info">
                         <h3>Tiếng Anh Giao Tiếp</h3>
-                        <p>Nền tảng vững chắc để tự tin giao tiếp trong môi trường quốc tế, phản xạ nhanh nhạy và chuẩn
-                            âm điệu.</p>
-                        <ul class="course-features">
-                            <li><i class="fa-solid fa-check"></i> 100% Giảng viên có chứng chỉ</li>
-                            <li><i class="fa-solid fa-check"></i> Thực hành tình huống thực tế</li>
-                        </ul>
-                        <a href="#" class="btn btn-outline course-btn">Xem chi tiết</a>
+                        <p>Nền tảng vững chắc để tự tin giao tiếp trong môi trường quốc tế, phản xạ nhanh nhạy.</p>
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-clock"></i> 3 tháng</span>
+                            <span><i class="fa-solid fa-users"></i> 1:10</span>
+                        </div>
+                        <a href="/course-detail" class="btn btn-outline course-btn">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
 
                 <!-- Course 3 -->
-                <div class="course-card fade-up delay-2">
+                <div class="course-card perspective-card fade-up stagger-item">
+                    <div class="card-shine"></div>
                     <div class="course-img">
-                        <img src="assets/english_course.png" alt="General English">
+                        <img src="assets/english_course.png" alt="Business English">
                     </div>
                     <div class="course-info">
                         <h3>Tiếng Anh Doanh Nghiệp</h3>
-                        <p>Thiết kế dành riêng cho người đi làm, trang bị kỹ năng ngoại ngữ từ thuyết trình đến viết
-                            email chuyên môn.</p>
-                        <ul class="course-features">
-                            <li><i class="fa-solid fa-check"></i> Tiếng Anh thương mại đặc thù</li>
-                            <li><i class="fa-solid fa-check"></i> Cải thiện kỹ năng làm việc toàn cầu</li>
-                        </ul>
-                        <a href="#" class="btn btn-outline course-btn">Xem chi tiết</a>
+                        <p>Trang bị kỹ năng ngoại ngữ chuyên nghiệp từ thuyết trình đến viết email doanh nghiệp.</p>
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-clock"></i> 3 tháng</span>
+                            <span><i class="fa-solid fa-users"></i> 1:6</span>
+                        </div>
+                        <a href="/course-detail" class="btn btn-outline course-btn">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Course 4 -->
+                <div class="course-card perspective-card fade-up stagger-item">
+                    <div class="card-shine"></div>
+                    <div class="course-img">
+                        <img src="assets/english_course.png" alt="TOEIC">
+                        <div class="course-badge badge-new">Mới</div>
+                    </div>
+                    <div class="course-info">
+                        <h3>Luyện thi TOEIC</h3>
+                        <p>Chiến thuật làm bài tối ưu giúp đạt 800+ điểm, tập trung Listening & Reading chuyên sâu.</p>
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-clock"></i> 2-3 tháng</span>
+                            <span><i class="fa-solid fa-users"></i> 1:10</span>
+                        </div>
+                        <a href="/course-detail" class="btn btn-outline course-btn">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Course 5 -->
+                <div class="course-card perspective-card fade-up stagger-item">
+                    <div class="card-shine"></div>
+                    <div class="course-img">
+                        <img src="assets/english_course.png" alt="Kids English">
+                    </div>
+                    <div class="course-info">
+                        <h3>Tiếng Anh Trẻ Em</h3>
+                        <p>Phương pháp Montessori kết hợp Cambridge cho trẻ 6-15 tuổi, học qua trò chơi tương tác.</p>
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-clock"></i> 6 tháng</span>
+                            <span><i class="fa-solid fa-users"></i> 1:6</span>
+                        </div>
+                        <a href="/course-detail" class="btn btn-outline course-btn">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Course 6 -->
+                <div class="course-card perspective-card fade-up stagger-item">
+                    <div class="card-shine"></div>
+                    <div class="course-img">
+                        <img src="assets/english_course.png" alt="PTE Academic">
+                        <div class="course-badge badge-hot">Hot</div>
+                    </div>
+                    <div class="course-info">
+                        <h3>Luyện thi PTE Academic</h3>
+                        <p>Chương trình luyện thi PTE Score 65+ với phương pháp AI-powered practice và mock test hàng tuần.</p>
+                        <div class="course-meta">
+                            <span><i class="fa-solid fa-clock"></i> 2-4 tháng</span>
+                            <span><i class="fa-solid fa-users"></i> 1:8</span>
+                        </div>
+                        <a href="/course-detail" class="btn btn-outline course-btn">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -147,21 +240,159 @@
                 <h2>Chất lượng tạo nên khác biệt</h2>
             </div>
             <div class="features-grid">
-                <div class="feature-box fade-up">
-                    <div class="feature-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                    <h3>Đội ngũ chuyên gia</h3>
-                    <p>100% giảng viên đạt chuẩn quốc tế CELTA, TESOL, có nhiều năm kinh nghiệm giảng dạy nhiệt huyết.
-                    </p>
+                <div class="feature-box macos-card fade-up">
+                    <div class="macos-titlebar">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="macos-body">
+                        <div class="feature-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        <h3>Đội ngũ chuyên gia</h3>
+                        <p>100% giảng viên đạt chuẩn quốc tế CELTA, TESOL, có nhiều năm kinh nghiệm giảng dạy nhiệt huyết.</p>
+                    </div>
                 </div>
-                <div class="feature-box fade-up delay-1">
-                    <div class="feature-icon"><i class="fa-solid fa-laptop-house"></i></div>
-                    <h3>Cơ sở vật chất 5*</h3>
-                    <p>Phòng học thiết kế sang trọng, tích hợp bảng thông minh và công nghệ học tập VR hiện đại.</p>
+                <div class="feature-box macos-card fade-up delay-1">
+                    <div class="macos-titlebar">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="macos-body">
+                        <div class="feature-icon"><i class="fa-solid fa-laptop-house"></i></div>
+                        <h3>Cơ sở vật chất 5*</h3>
+                        <p>Phòng học thiết kế sang trọng, tích hợp bảng thông minh và công nghệ học tập VR hiện đại.</p>
+                    </div>
                 </div>
-                <div class="feature-box fade-up delay-2">
-                    <div class="feature-icon"><i class="fa-solid fa-certificate"></i></div>
-                    <h3>Cam kết đầu ra</h3>
-                    <p>Bảo hành trọn đời kết quả học tập bằng văn bản với lộ trình cá nhân hóa cho từng học viên.</p>
+                <div class="feature-box macos-card fade-up delay-2">
+                    <div class="macos-titlebar">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="macos-body">
+                        <div class="feature-icon"><i class="fa-solid fa-certificate"></i></div>
+                        <h3>Cam kết đầu ra</h3>
+                        <p>Bảo hành trọn đời kết quả học tập bằng văn bản với lộ trình cá nhân hóa cho từng học viên.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section - Upcoming Courses + Student Results -->
+    <section id="news" class="section news-section">
+        <div class="container">
+            <div class="section-header fade-up">
+                <span class="badge">Tin tức & Sự kiện</span>
+                <h2>Cập nhật mới nhất từ Elite</h2>
+                <p>Các khóa học sắp khai giảng và thành tích nổi bật của học viên.</p>
+            </div>
+
+            <!-- Upcoming Courses Sub-section -->
+            <div class="news-subsection">
+                <h3 class="news-sub-title fade-up"><i class="fa-solid fa-calendar-star"></i> Khóa học sắp khai giảng</h3>
+                <div class="upcoming-grid">
+                    <div class="upcoming-card fade-up stagger-item">
+                        <div class="upcoming-date">
+                            <span class="upcoming-day">20</span>
+                            <span class="upcoming-month">Th04</span>
+                        </div>
+                        <div class="upcoming-info">
+                            <h4>IELTS Intensive - Target 7.0+</h4>
+                            <p>Lộ trình 4 tháng chuyên sâu, cam kết đầu ra</p>
+                            <div class="upcoming-meta">
+                                <span><i class="fa-solid fa-map-pin"></i> CS1 - Vỹ Dạ</span>
+                                <span><i class="fa-solid fa-user-group"></i> Còn 5 slot</span>
+                            </div>
+                        </div>
+                        <div class="upcoming-status status-hot">Sắp đầy</div>
+                    </div>
+                    <div class="upcoming-card fade-up stagger-item">
+                        <div class="upcoming-date">
+                            <span class="upcoming-day">25</span>
+                            <span class="upcoming-month">Th04</span>
+                        </div>
+                        <div class="upcoming-info">
+                            <h4>Giao Tiếp Cơ Bản - A2 → B1</h4>
+                            <p>3 tháng xây dựng nền tảng giao tiếp vững chắc</p>
+                            <div class="upcoming-meta">
+                                <span><i class="fa-solid fa-map-pin"></i> Online</span>
+                                <span><i class="fa-solid fa-user-group"></i> Còn 8 slot</span>
+                            </div>
+                        </div>
+                        <div class="upcoming-status status-open">Đang mở</div>
+                    </div>
+                    <div class="upcoming-card fade-up stagger-item">
+                        <div class="upcoming-date">
+                            <span class="upcoming-day">01</span>
+                            <span class="upcoming-month">Th05</span>
+                        </div>
+                        <div class="upcoming-info">
+                            <h4>TOEIC 800+ Crash Course</h4>
+                            <p>2 tháng luyện đề và chiến thuật làm bài tối ưu</p>
+                            <div class="upcoming-meta">
+                                <span><i class="fa-solid fa-map-pin"></i> CS2 - Phú Hội</span>
+                                <span><i class="fa-solid fa-user-group"></i> Còn 10 slot</span>
+                            </div>
+                        </div>
+                        <div class="upcoming-status status-open">Đang mở</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Results Sub-section -->
+            <div class="news-subsection">
+                <h3 class="news-sub-title fade-up"><i class="fa-solid fa-trophy"></i> Kết quả học viên nổi bật</h3>
+                <div class="results-grid">
+                    <div class="result-card fade-up stagger-item">
+                        <div class="result-avatar-wrap">
+                            <img src="https://i.pravatar.cc/150?img=47" alt="Student" class="result-avatar">
+                            <div class="result-score">8.0</div>
+                        </div>
+                        <h4>Lê Minh Quân</h4>
+                        <p class="result-detail">IELTS Overall 8.0</p>
+                        <div class="result-breakdown">
+                            <span>L: 8.5</span><span>R: 8.0</span><span>W: 7.5</span><span>S: 8.0</span>
+                        </div>
+                        <p class="result-note">Sau 5 tháng tại Elite, tăng 2.0 band</p>
+                    </div>
+                    <div class="result-card fade-up stagger-item">
+                        <div class="result-avatar-wrap">
+                            <img src="https://i.pravatar.cc/150?img=23" alt="Student" class="result-avatar">
+                            <div class="result-score">7.5</div>
+                        </div>
+                        <h4>Trần Ngọc Ánh</h4>
+                        <p class="result-detail">IELTS Overall 7.5</p>
+                        <div class="result-breakdown">
+                            <span>L: 8.0</span><span>R: 7.5</span><span>W: 7.0</span><span>S: 7.5</span>
+                        </div>
+                        <p class="result-note">Đạt học bổng 100% ĐH Melbourne</p>
+                    </div>
+                    <div class="result-card fade-up stagger-item">
+                        <div class="result-avatar-wrap">
+                            <img src="https://i.pravatar.cc/150?img=15" alt="Student" class="result-avatar">
+                            <div class="result-score">950</div>
+                        </div>
+                        <h4>Nguyễn Hoàng Phúc</h4>
+                        <p class="result-detail">TOEIC 950/990</p>
+                        <div class="result-breakdown">
+                            <span>L: 485</span><span>R: 465</span>
+                        </div>
+                        <p class="result-note">Thăng chức Manager tại Samsung Việt Nam</p>
+                    </div>
+                    <div class="result-card fade-up stagger-item">
+                        <div class="result-avatar-wrap">
+                            <img src="https://i.pravatar.cc/150?img=44" alt="Student" class="result-avatar">
+                            <div class="result-score">7.0</div>
+                        </div>
+                        <h4>Phạm Thị Hồng Nhung</h4>
+                        <p class="result-detail">IELTS Overall 7.0</p>
+                        <div class="result-breakdown">
+                            <span>L: 7.5</span><span>R: 7.0</span><span>W: 6.5</span><span>S: 7.0</span>
+                        </div>
+                        <p class="result-note">Từ 5.0 lên 7.0 chỉ trong 4 tháng</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -206,6 +437,79 @@
                         <div>
                             <h4>Hoàng Phương Linh</h4>
                             <span>Tiếng Anh Doanh Nghiệp</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section id="faq" class="section faq-section">
+        <div class="container">
+            <div class="section-header fade-up">
+                <span class="badge">Câu hỏi thường gặp</span>
+                <h2>Giải đáp thắc mắc của bạn</h2>
+                <p>Tìm hiểu thêm về chương trình và phương pháp đào tạo tại Elite.</p>
+            </div>
+            <div class="accordion-wrapper">
+                <div class="accordion-item fade-up" id="acc-1">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="acc-panel-1">
+                        <span class="accordion-icon"><i class="fa-solid fa-circle-question"></i></span>
+                        <span class="accordion-title">Lộ trình học IELTS 7.0+ mất bao lâu?</span>
+                        <span class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                    </button>
+                    <div class="accordion-panel" id="acc-panel-1">
+                        <div class="accordion-content">
+                            Tùy thuộc vào trình độ đầu vào, lộ trình trung bình từ <strong>4-6 tháng</strong> cho học viên có nền tảng Pre-Intermediate trở lên. Elite cam kết đầu ra bằng văn bản và hỗ trợ học lại miễn phí nếu chưa đạt target.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item fade-up delay-1" id="acc-2">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="acc-panel-2">
+                        <span class="accordion-icon"><i class="fa-solid fa-circle-question"></i></span>
+                        <span class="accordion-title">Học phí và chính sách thanh toán như thế nào?</span>
+                        <span class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                    </button>
+                    <div class="accordion-panel" id="acc-panel-2">
+                        <div class="accordion-content">
+                            Elite cung cấp nhiều gói học phí linh hoạt, hỗ trợ trả góp 0% lãi suất. Học viên được miễn phí kiểm tra đầu vào và tư vấn lộ trình cá nhân hóa trước khi đóng phí.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item fade-up delay-2" id="acc-3">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="acc-panel-3">
+                        <span class="accordion-icon"><i class="fa-solid fa-circle-question"></i></span>
+                        <span class="accordion-title">Có thể học online không?</span>
+                        <span class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                    </button>
+                    <div class="accordion-panel" id="acc-panel-3">
+                        <div class="accordion-content">
+                            Có! Elite cung cấp cả hình thức học <strong>Online</strong> và <strong>Offline</strong>. Lớp online sử dụng nền tảng riêng với bảng tương tác, breakout rooms, và AI hỗ trợ chấm chữa bài tự động.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item fade-up delay-3" id="acc-4">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="acc-panel-4">
+                        <span class="accordion-icon"><i class="fa-solid fa-circle-question"></i></span>
+                        <span class="accordion-title">Đội ngũ giảng viên có trình độ như thế nào?</span>
+                        <span class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                    </button>
+                    <div class="accordion-panel" id="acc-panel-4">
+                        <div class="accordion-content">
+                            100% giảng viên tại Elite đều có chứng chỉ <strong>CELTA / TESOL</strong> quốc tế và tối thiểu 3 năm kinh nghiệm. Đội ngũ bao gồm cả giảng viên bản ngữ từ Anh, Mỹ, Úc và giảng viên Việt Nam đạt IELTS 8.0+.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item fade-up delay-3" id="acc-5">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="acc-panel-5">
+                        <span class="accordion-icon"><i class="fa-solid fa-circle-question"></i></span>
+                        <span class="accordion-title">Có hỗ trợ sau khóa học không?</span>
+                        <span class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                    </button>
+                    <div class="accordion-panel" id="acc-panel-5">
+                        <div class="accordion-content">
+                            Học viên được tham gia <strong>cộng đồng Alumni</strong> miễn phí trọn đời với các buổi workshop, webinar hàng tháng. Ngoài ra, Elite còn hỗ trợ viết CV tiếng Anh, phỏng vấn mô phỏng và kết nối cơ hội việc làm.
                         </div>
                     </div>
                 </div>
