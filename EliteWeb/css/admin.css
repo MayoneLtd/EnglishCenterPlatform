@@ -410,3 +410,321 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ========================================================
+   ========   ADMIN-SPECIFIC PREMIUM ANIMATIONS   ========
+   ======================================================== */
+
+/* ===== Admin Label Glow Pulse ===== */
+.admin-label {
+    animation: adminLabelGlow 3s ease-in-out infinite;
+}
+
+@keyframes adminLabelGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+    50% { box-shadow: 0 0 12px rgba(244, 63, 94, 0.2), 0 0 24px rgba(244, 63, 94, 0.08); }
+}
+
+/* ===== Admin Course Card Stagger ===== */
+.admin-course-card {
+    animation: adminCardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.admin-courses-grid .admin-course-card:nth-child(1) { animation-delay: 0.1s; }
+.admin-courses-grid .admin-course-card:nth-child(2) { animation-delay: 0.18s; }
+.admin-courses-grid .admin-course-card:nth-child(3) { animation-delay: 0.26s; }
+.admin-courses-grid .admin-course-card:nth-child(4) { animation-delay: 0.34s; }
+.admin-courses-grid .admin-course-card:nth-child(5) { animation-delay: 0.42s; }
+.admin-courses-grid .admin-course-card:nth-child(6) { animation-delay: 0.5s; }
+
+@keyframes adminCardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(35px) scale(0.93);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== Admin Course Card Hover Shine ===== */
+.admin-course-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+    transition: left 0.6s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.admin-course-card:hover::after {
+    left: 150%;
+}
+
+/* ===== Action Buttons Micro-interaction ===== */
+.act-btn {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.act-btn:hover {
+    transform: scale(1.15);
+}
+
+.act-btn:active {
+    transform: scale(0.9);
+}
+
+/* ===== Modal Scale+Blur Transition ===== */
+.modal-overlay {
+    backdrop-filter: blur(0);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.active {
+    backdrop-filter: blur(8px);
+}
+
+.modal-container {
+    transform: translateY(30px) scale(0.92);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-container {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* ===== Modal Header Gradient Line ===== */
+.modal-header {
+    position: relative;
+}
+
+.modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 25px;
+    right: 25px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+}
+
+/* ===== Form Input Animate Label ===== */
+.form-group label {
+    transition: color 0.3s ease;
+}
+
+.form-group:focus-within label {
+    color: var(--accent);
+}
+
+.form-control {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.form-control:focus {
+    transform: translateY(-1px);
+}
+
+/* ===== Notification Entrance ===== */
+.notif-item {
+    animation: notifSlide 0.4s ease both;
+}
+
+.notif-item:nth-child(1) { animation-delay: 0.1s; }
+.notif-item:nth-child(2) { animation-delay: 0.2s; }
+.notif-item:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes notifSlide {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Schedule Slot Hover ===== */
+.schedule-slot {
+    transition: background 0.3s ease, transform 0.3s ease;
+    border-radius: 8px;
+}
+
+.schedule-slot:hover {
+    background: rgba(59, 130, 246, 0.04);
+    transform: translateX(4px);
+}
+
+/* ===== Confirm Modal Danger Accent ===== */
+#confirmModal .modal-container {
+    border-color: rgba(244, 63, 94, 0.2);
+}
+
+#confirmModal.active .modal-container {
+    box-shadow: 0 20px 60px rgba(244, 63, 94, 0.15), 0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ===== ADMIN COURSE DETAIL (REFINED BENTO GRID) ===== */
+.admin-cd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+    padding: 24px 30px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(16px);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-cd-header::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    background: radial-gradient(circle at right, rgba(59, 130, 246, 0.1), transparent 70%);
+    pointer-events: none;
+}
+
+.admin-cd-header h2 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, #ffffff, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.admin-cd-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.admin-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-stat-box {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.admin-stat-box:hover {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.admin-stat-box .asb-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.asb-icon.blue { background: rgba(59, 130, 246, 0.15); color: #60A5FA; }
+.asb-icon.purple { background: rgba(139, 92, 246, 0.15); color: #A78BFA; }
+.asb-icon.emerald { background: rgba(16, 185, 129, 0.15); color: #34D399; }
+.asb-icon.rose { background: rgba(244, 63, 94, 0.15); color: #FB7185; }
+
+.admin-stat-box .asb-info h4 {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.admin-stat-box .asb-info .asb-val {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+}
+
+.admin-bento-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 24px;
+    align-items: start;
+}
+
+.admin-bento-card {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(12px);
+}
+
+.admin-bento-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.admin-bento-card-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    color: white;
+}
+
+.admin-bento-card-header h3 i {
+    color: var(--accent);
+}
+
+.abc-quick-edit label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.abc-quick-edit select, .abc-quick-edit input {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.abc-quick-edit select:focus, .abc-quick-edit input:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+.abc-form-row {
+    margin-bottom: 16px;
+}

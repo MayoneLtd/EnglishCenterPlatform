@@ -1,6 +1,7 @@
 // Supabase Client Configuration
 const SUPABASE_URL = 'https://ceidvdnmyeqfyxgqdvve.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlaWR2ZG5teWVxZnl4Z3FkdnZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzg1NDEsImV4cCI6MjA5MTYxNDU0MX0.VDzi19Thmx8xLC_fCmbrSkZBYmXC9MZQhXVEIuLq0HU';
+const SUPABASE_SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlaWR2ZG5teWVxZnl4Z3FkdnZlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjAzODU0MSwiZXhwIjoyMDkxNjE0NTQxfQ.BtylHdtYwGYkUUuA1s_Laj2U1PVfcBKu1-63wv8ulyU';
 
 // Initialize Supabase client (loaded via CDN script tag)
 // Usage: include <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> before this file
@@ -296,7 +297,7 @@ async function deleteCourse(id) {
 // ===== Student Admin Helpers =====
 
 // Secondary client using in-memory storage to prevent logging out admin when creating students
-const supabaseAdminMode = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+const supabaseAdminMode = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     auth: {
         autoRefreshToken: false,
         persistSession: false,
@@ -337,6 +338,17 @@ async function updateStudentProfile(userId, profileData) {
         .update(profileData)
         .eq('id', userId);
     if (error) throw error;
+}
+
+async function updateUserPassword(userId, newPassword) {
+    // Note: Calling auth.admin requires Supabase Service Role Key.
+    // If supabaseAdminMode is only using ANON key, this WILL fail with API error.
+    const { data, error } = await supabaseAdminMode.auth.admin.updateUserById(
+        userId,
+        { password: newPassword }
+    );
+    if (error) throw error;
+    return data;
 }
 
 async function deleteStudent(userId) {

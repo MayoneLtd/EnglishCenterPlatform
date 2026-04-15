@@ -108,18 +108,25 @@ document.addEventListener('DOMContentLoaded', () => {
         el.textContent = '';
         let charIndex = 0;
         
-        text.split('').forEach((char, i) => {
-            if (char === ' ') {
-                const space = document.createElement('span');
-                space.classList.add('space');
-                el.appendChild(space);
-            } else {
+        text.split(' ').forEach((word, wordIndex, wordsArray) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.style.display = 'inline-block';
+            wordSpan.style.whiteSpace = 'nowrap';
+            
+            word.split('').forEach(char => {
                 const span = document.createElement('span');
                 span.classList.add('char');
                 span.textContent = char;
                 span.style.animationDelay = `${0.3 + charIndex * 0.03}s`;
-                el.appendChild(span);
+                wordSpan.appendChild(span);
                 charIndex++;
+            });
+            
+            el.appendChild(wordSpan);
+            
+            if (wordIndex < wordsArray.length - 1) {
+                // Add a text node with a space so the browser can natively wrap lines between words
+                el.appendChild(document.createTextNode(' '));
             }
         });
     });

@@ -174,82 +174,133 @@
 
         <!-- TAB: Course Detail -->
         <div class="tab-content" id="tab-course-detail">
-            <div class="tab-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="admin-cd-header">
                 <div>
                     <h2 id="cdPageTitle">Chi tiết khóa học</h2>
-                    <p>Thông tin khóa học và danh sách học viên tham gia.</p>
+                    <p id="cdPageDesc">Quản lý nâng cao nội dung và học viên của khóa học này.</p>
+                    <input type="hidden" id="cdPageCurrentCourseId">
                 </div>
-                <button class="btn btn-secondary" onclick="switchTab('courses')">← Quay lại danh sách</button>
+                <button class="btn btn-secondary" onclick="switchTab('courses')"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
             </div>
 
-            <div class="dashboard-section" style="margin-bottom: 20px;">
-                <div style="display: flex; gap: 20px;">
-                    <div style="flex:1;">
-                        <h3 id="cdPageName" style="color:var(--accent); margin-bottom: 15px; font-size: 24px;">Tên khóa
-                        </h3>
-                        <p style="margin-bottom: 12px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-user-tie"></i> <strong>Giảng viên:</strong>
-                            <select id="cdPageTeacherSelect" class="form-control" style="width: 200px; padding: 4px 10px; font-size: 13px;" onchange="updateCourseQuick('teacher_name', this.value)"></select></p>
-                        <p style="margin-bottom: 12px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-clock"></i> <strong>Số buổi:</strong>
-                            <input type="number" id="cdPageLessonsInput" class="form-control" style="width: 80px; padding: 4px 10px; font-size: 13px;" onchange="updateCourseQuick('total_lessons', this.value)"></p>
-                        <p style="margin-bottom: 12px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-info-circle"></i> <strong>Trạng thái:</strong>
-                            <select id="cdPageStatusSelect" class="form-control" style="width: 150px; padding: 4px 10px; font-size: 13px;" onchange="updateCourseQuick('status', this.value)">
-                                <option value="active">Đang mở</option>
-                                <option value="upcoming">Sắp khai giảng</option>
-                                <option value="completed">Hoàn thành</option>
-                            </select>
-                            <span id="cdPageStatusFeedback" style="font-size:12px;color:#4ADE80;display:none;"><i class="fa-solid fa-check"></i> Đã lưu</span>
-                        </p>
-                        <p style="margin-bottom: 8px; color:var(--text-muted);" id="cdPageDesc"></p>
+            <!-- Bento Stats Grid -->
+            <div class="admin-stats-row">
+                <div class="admin-stat-box">
+                    <div class="asb-icon blue"><i class="fa-solid fa-users"></i></div>
+                    <div class="asb-info">
+                        <h4>Học viên</h4>
+                        <div class="asb-val" id="cdPageStudentCountDisplay">0</div>
+                    </div>
+                </div>
+                <div class="admin-stat-box">
+                    <div class="asb-icon purple"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="asb-info">
+                        <h4>Bài giảng</h4>
+                        <div class="asb-val" id="cdPageLessonCountDisplay">0</div>
+                    </div>
+                </div>
+                <div class="admin-stat-box">
+                    <div class="asb-icon emerald"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div class="asb-info">
+                        <h4>Trạng thái</h4>
+                        <div class="asb-val" id="cdPageStatusDisplay" style="font-size:16px;">...</div>
+                    </div>
+                </div>
+                <div class="admin-stat-box">
+                    <div class="asb-icon rose"><i class="fa-solid fa-bell"></i></div>
+                    <div class="asb-info">
+                        <h4>Sắp xếp</h4>
+                        <div class="asb-val" style="font-size:15px; color:#4ADE80;">Tự động lưu</div>
                     </div>
                 </div>
             </div>
 
-            <div class="dashboard-section">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                    <h3><i class="fa-solid fa-users"></i> Học viên tham gia (<span id="cdPageStudentCount">0</span>)
-                    </h3>
-                    <div style="display:flex; gap:10px;">
-                        <select id="cdPageStudentSelect" class="form-control" style="min-width: 250px;"></select>
-                        <button class="btn btn-primary" onclick="addStudentToCoursePage()" id="btnAddStudentPage">Thêm
-                            học viên</button>
+            <div class="admin-bento-grid">
+                <!-- Left Column (Tables & Lessons) -->
+                <div>
+                    <div class="admin-bento-card" style="margin-bottom: 24px;">
+                        <div class="admin-bento-card-header">
+                            <h3><i class="fa-solid fa-users-gear"></i> Học viên tham gia (<span id="cdPageStudentCount">0</span>)</h3>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <select id="cdPageStudentSelect" class="form-control" style="min-width: 200px; background: rgba(15,23,42,0.5);"></select>
+                                <button class="btn btn-primary" onclick="addStudentToCoursePage()" id="btnAddStudentPage" style="white-space: nowrap;">Thêm học viên</button>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="dash-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã HV</th>
+                                        <th>Họ và tên</th>
+                                        <th>Ngày tham gia</th>
+                                        <th style="text-align:right;">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cdPageStudentsTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="admin-bento-card" style="margin-bottom: 24px;">
+                        <div class="admin-bento-card-header">
+                            <h3><i class="fa-solid fa-chalkboard-user"></i> Cấu trúc bài giảng</h3>
+                            <button class="btn btn-primary" onclick="openLessonModal()" style="white-space: nowrap;"><i class="fa-solid fa-plus"></i> Thêm buổi học</button>
+                        </div>
+                        <div id="cdPageLessonsList">
+                            <p style="color:var(--text-muted); text-align:center; padding: 20px;">Đang tải...</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-bento-card" id="cdPageExercisesSection">
+                        <div class="admin-bento-card-header">
+                            <h3><i class="fa-solid fa-file-signature"></i> Bài tập & Kết quả</h3>
+                        </div>
+                        <div id="cdPageExercisesList">
+                            <p style="color:var(--text-muted); text-align:center; padding: 20px;">Đang tải...</p>
+                        </div>
                     </div>
                 </div>
-                <div class="table-wrap">
-                    <table class="dash-table">
-                        <thead>
-                            <tr>
-                                <th>Mã HV</th>
-                                <th>Họ và tên</th>
-                                <th>Ngày tham gia</th>
-                                <th style="text-align:right;">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cdPageStudentsTable">
-                            <!-- enrolled students -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <div class="dashboard-section">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                    <h3><i class="fa-solid fa-chalkboard"></i> Nội dung bài giảng</h3>
-                    <button class="btn btn-primary" onclick="openLessonModal()">+ Thêm buổi học</button>
-                </div>
-                <div id="cdPageLessonsList">
-                    <p style="color:var(--text-muted);">Đang tải...</p>
-                </div>
-            </div>
+                <!-- Right Column (Quick Edit Sidebar) -->
+                <div>
+                    <div class="admin-bento-card" style="position: sticky; top: 20px;">
+                        <div class="admin-bento-card-header" style="border-color: rgba(59,130,246,0.3);">
+                            <h3><i class="fa-solid fa-sliders"></i> Tùy chỉnh Nhanh</h3>
+                        </div>
+                        
+                        <div class="abc-quick-edit">
+                            <div class="abc-form-row">
+                                <label>Tên Khóa Học</label>
+                                <h4 id="cdPageName" style="color: var(--accent); margin-top: 5px; font-size: 18px;">[Tên Khóa]</h4>
+                            </div>
 
-            <div class="dashboard-section" id="cdPageExercisesSection">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                    <h3><i class="fa-solid fa-list-check"></i> Bài tập & Kết quả</h3>
-                </div>
-                <div id="cdPageExercisesList">
-                    <p style="color:var(--text-muted);">Đang tải...</p>
+                            <div class="abc-form-row">
+                                <label>Giảng viên phụ trách</label>
+                                <select id="cdPageTeacherSelect" onchange="updateCourseQuick('teacher_name', this.value)"></select>
+                            </div>
+
+                            <div class="abc-form-row">
+                                <label>Tổng số buổi dự kiến</label>
+                                <input type="number" id="cdPageLessonsInput" onchange="updateCourseQuick('total_lessons', this.value)">
+                            </div>
+
+                            <div class="abc-form-row">
+                                <label>Trạng thái</label>
+                                <select id="cdPageStatusSelect" onchange="updateCourseQuick('status', this.value)">
+                                    <option value="active">Đang hoạt động</option>
+                                    <option value="upcoming">Sắp khai giảng</option>
+                                    <option value="completed">Đã hoàn thành</option>
+                                </select>
+                            </div>
+                            
+                            <div style="margin-top: 20px; text-align: center; font-size: 12px; color: var(--text-muted);">
+                                <span id="cdPageStatusFeedback" style="color:#4ADE80; display:none;"><i class="fa-solid fa-circle-check"></i> Đã lưu thành công tự động</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <input type="hidden" id="cdPageCurrentCourseId">
         </div>
         <!-- TAB: Giảng viên -->
         <div class="tab-content" id="tab-teachers">
@@ -342,9 +393,10 @@
                             <select class="form-control" id="studentCourseSelect"></select>
                         </div>
                         <div class="form-group" id="studentPasswordGroup">
-                            <label>Mật khẩu lần đầu *</label>
+                            <label id="lblStudentPassword">Mật khẩu lần đầu *</label>
                             <input type="password" class="form-control" id="studentPassword" placeholder="VD: 123456"
-                                required>
+                                required minlength="6" oninput="validateStudentPassword()">
+                            <div id="studentPasswordError" style="color: #ef4444; font-size: 13px; margin-top: 6px; display: none; font-weight: 500;"></div>
                         </div>
                         <div class="form-group">
                             <label>Họ và tên *</label>
@@ -385,7 +437,7 @@
                         </div>
                         <div class="form-group">
                             <label>Giảng viên</label>
-                            <input type="text" class="form-control" id="courseTeacher">
+                            <select class="form-control" id="courseTeacher"></select>
                         </div>
                         <div class="form-group">
                             <label>Số buổi</label>
@@ -530,6 +582,70 @@
             </div>
         </div>
     </main>
+
+    <script>
+    // Dashboard Premium Animations
+    (function() {
+        // Scroll progress bar
+        const main = document.querySelector('.dashboard-main');
+        if (main) {
+            main.addEventListener('scroll', () => {
+                const scrollTop = main.scrollTop;
+                const scrollH = main.scrollHeight - main.clientHeight;
+                const progress = scrollH > 0 ? scrollTop / scrollH : 0;
+                main.style.setProperty('--scroll-progress', progress);
+                document.documentElement.style.setProperty('--dash-scroll', progress);
+            }, { passive: true });
+
+            const styleEl = document.createElement('style');
+            styleEl.textContent = `
+                .dashboard-main::before {
+                    transform: scaleX(var(--dash-scroll, 0)) !important;
+                }
+            `;
+            document.head.appendChild(styleEl);
+        }
+
+        // Stat counter animation
+        function animateDashCounters() {
+            document.querySelectorAll('.ov-stat-value').forEach(el => {
+                const text = el.textContent.trim();
+                const num = parseInt(text);
+                if (isNaN(num) || num === 0 || el.dataset.animated) return;
+                el.dataset.animated = 'true';
+                const target = num;
+                const duration = 1200;
+                const startTime = performance.now();
+                el.textContent = '0';
+
+                function update(now) {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.round(eased * target);
+                    if (progress < 1) requestAnimationFrame(update);
+                    else el.textContent = target;
+                }
+                requestAnimationFrame(update);
+            });
+        }
+
+        // Watch for data load
+        const obs = new MutationObserver(() => {
+            animateDashCounters();
+        });
+        document.querySelectorAll('.ov-stat-value').forEach(el => {
+            obs.observe(el, { childList: true, characterData: true, subtree: true });
+        });
+
+        // Sidebar hover enhancement
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            });
+        });
+    })();
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/js/supabase.js"></script>
@@ -726,6 +842,8 @@
             document.getElementById('courseForm').reset();
             document.getElementById('courseId').value = '';
             document.getElementById('courseModalTitle').textContent = 'Thêm khóa học';
+            document.getElementById('courseTeacher').innerHTML = '<option value="">-- Chọn giảng viên --</option>' +
+                globalTeachers.map(t => `<option value="${t.full_name}">${t.full_name}</option>`).join('');
             openModal('courseModal');
         }
 
@@ -734,7 +852,8 @@
             if (!c) return;
             document.getElementById('courseId').value = c.id;
             document.getElementById('courseName').value = c.name;
-            document.getElementById('courseTeacher').value = c.teacher_name;
+            document.getElementById('courseTeacher').innerHTML = '<option value="">-- Chọn giảng viên --</option>' +
+                globalTeachers.map(t => `<option value="${t.full_name}" ${t.full_name === c.teacher_name ? 'selected' : ''}>${t.full_name}</option>`).join('');
             document.getElementById('courseLessons').value = c.total_lessons;
             document.getElementById('courseStatus').value = c.status;
             document.getElementById('courseDesc').value = c.description;
@@ -789,7 +908,14 @@
             document.getElementById('cdPageName').textContent = course.name;
             document.getElementById('cdPageLessonsInput').value = course.total_lessons || 0;
             document.getElementById('cdPageStatusSelect').value = course.status || 'active';
-            document.getElementById('cdPageDesc').textContent = course.description || '';
+            
+            // Sync Status String to Bento Box
+            let statusStr = "Đang hoạt động";
+            if (course.status === 'upcoming') statusStr = "Sắp khai giảng";
+            if (course.status === 'completed') statusStr = "Hoàn thành";
+            document.getElementById('cdPageStatusDisplay').textContent = statusStr;
+
+            document.getElementById('cdPageDesc').textContent = course.description || 'Quản lý thông tin chi tiết về nội dung giảng dạy và học viên của khóa học.';
 
             // Populate teacher dropdown
             const teacherSelect = document.getElementById('cdPageTeacherSelect');
@@ -807,7 +933,13 @@
             if (!courseId) return;
             const data = {};
             if (field === 'total_lessons') data.total_lessons = parseInt(value, 10) || 0;
-            else if (field === 'status') data.status = value;
+            else if (field === 'status') {
+                data.status = value;
+                let statusStr = "Đang hoạt động";
+                if (value === 'upcoming') statusStr = "Sắp khai giảng";
+                if (value === 'completed') statusStr = "Hoàn thành";
+                document.getElementById('cdPageStatusDisplay').textContent = statusStr;
+            }
             else if (field === 'teacher_name') data.teacher_name = value;
             
             try {
@@ -926,9 +1058,48 @@
             document.getElementById('studentCourseGroup').style.display = 'block';
             document.getElementById('studentPasswordGroup').style.display = 'block';
             document.getElementById('studentCodeGroup').style.display = 'none';
+
+            document.getElementById('lblStudentPassword').textContent = 'Mật khẩu lần đầu *';
+            document.getElementById('studentPassword').placeholder = 'VD: 123456';
             document.getElementById('studentPassword').required = true;
+            document.getElementById('studentPassword').value = '';
+            document.getElementById('btnSaveStudent').disabled = true;
+            document.getElementById('studentPasswordError').style.display = 'none';
             document.getElementById('studentModalTitle').textContent = 'Thêm tài khoản học viên';
             openModal('studentModal');
+        }
+
+        function validateStudentPassword() {
+            const studentId = document.getElementById('studentId').value;
+            const pass = document.getElementById('studentPassword').value;
+            const passError = document.getElementById('studentPasswordError');
+            const btn = document.getElementById('btnSaveStudent');
+
+            if (studentId) {
+                // Editing mode
+                if (pass && pass.length < 6) {
+                    btn.disabled = true;
+                    passError.textContent = "Mật khẩu mới phải có ít nhất 6 ký tự";
+                    passError.style.display = 'block';
+                } else {
+                    btn.disabled = false;
+                    passError.style.display = 'none';
+                }
+            } else {
+                // Add mode
+                if (!pass || pass.length < 6) {
+                    btn.disabled = true;
+                    if (pass.length > 0) {
+                        passError.textContent = "Mật khẩu phải có ít nhất 6 ký tự";
+                        passError.style.display = 'block';
+                    } else {
+                        passError.style.display = 'none';
+                    }
+                } else {
+                    btn.disabled = false;
+                    passError.style.display = 'none';
+                }
+            }
         }
 
         function editStudent(id) {
@@ -940,9 +1111,15 @@
             document.getElementById('studentPhone').value = s.phone || '';
 
             document.getElementById('studentCourseGroup').style.display = 'none';
-            document.getElementById('studentPasswordGroup').style.display = 'none';
+            document.getElementById('studentPasswordGroup').style.display = 'block';
             document.getElementById('studentCodeGroup').style.display = 'block';
+            
+            document.getElementById('lblStudentPassword').textContent = 'Mật khẩu mới (Tùy chọn)';
+            document.getElementById('studentPassword').placeholder = 'Bỏ trống nếu không đổi...';
             document.getElementById('studentPassword').required = false;
+            document.getElementById('studentPassword').value = '';
+            document.getElementById('studentPasswordError').style.display = 'none';
+            document.getElementById('btnSaveStudent').disabled = false;
 
             document.getElementById('studentModalTitle').textContent = 'Sửa thông tin học viên';
             openModal('studentModal');
@@ -964,11 +1141,36 @@
                         // student_code cannot be changed manually now
                     };
                     await updateStudentProfile(id, profileData);
+
+                    const pass = document.getElementById('studentPassword').value;
+                    if (pass && pass.length >= 6) {
+                        if (typeof updateUserPassword === 'function') {
+                            try {
+                                await updateUserPassword(id, pass);
+                            } catch(perr) {
+                                console.error(perr);
+                                alert("Cập nhật thông tin thành công, nhưng lỗi đổi mật khẩu (Cần quyền Admin Supabase): " + perr.message);
+                            }
+                        } else {
+                            console.warn("API đổi pass không tồn tại trong supabase.js");
+                        }
+                    }
                 } else {
                     const select = document.getElementById('studentCourseSelect');
                     const courseId = select.value;
                     const pass = document.getElementById('studentPassword').value;
-                    if (!pass) throw new Error("Vui lòng nhập mật khẩu");
+                    const passError = document.getElementById('studentPasswordError');
+                    if (passError) passError.style.display = 'none';
+
+                    if (!pass || pass.length < 6) {
+                        if (passError) {
+                            passError.textContent = "Mật khẩu phải có ít nhất 6 ký tự";
+                            passError.style.display = 'block';
+                        }
+                        btn.disabled = false;
+                        btn.textContent = "Lưu học viên";
+                        return; // Stop execution
+                    }
 
                     // Generate code: EL[YY][SEQ] (e.g., EL26001)
                     const yearStr = new Date().getFullYear().toString().slice(-2);
@@ -1092,6 +1294,9 @@
             container.innerHTML = '<p style="color:var(--text-muted);">Đang tải bài giảng...</p>';
             try {
                 const lessons = await getCourseLessons(courseId);
+                const lessonCntDisplay = document.getElementById('cdPageLessonCountDisplay');
+                if(lessonCntDisplay && lessons) lessonCntDisplay.textContent = lessons.length;
+
                 if (!lessons || lessons.length === 0) {
                     container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;"><i class="fa-solid fa-inbox" style="font-size:24px;display:block;margin-bottom:8px;opacity:0.4;"></i>Chưa có buổi học nào được thêm.</p>';
                     return;

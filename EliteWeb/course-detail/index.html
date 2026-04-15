@@ -4,16 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết khóa học - Elite Language Center</title>
+    <title>Chi tiết Khóa học - Elite Language Center</title>
+    <meta name="description" content="Khóa học chất lượng cao tại Elite Language Center.">
     <link rel="stylesheet" href="/css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="cdt-page">
+    <!-- Cursor Glow -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
     <!-- Navbar -->
-    <nav class="navbar scrolled">
+    <nav class="navbar">
         <div class="container nav-container">
             <a href="/" class="logo">
                 <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
@@ -32,155 +35,345 @@
         </div>
     </nav>
 
-    <!-- Course Detail Hero -->
-    <section class="cd-hero">
-        <div class="cd-hero-bg"></div>
-        <div class="cd-hero-particles" id="cd-particles"></div>
+    <!-- NEW PREMIUM COURSE DETAIL UI -->
+    
+    <!-- Hero Section -->
+    <section class="cdt-hero">
+        <div class="cdt-hero-bg">
+            <img src="/assets/english_course.png" alt="Course Background">
+        </div>
+        <div class="cdt-hero-orbs">
+            <div class="cdt-orb cdt-orb--blue"></div>
+            <div class="cdt-orb cdt-orb--purple"></div>
+        </div>
+
         <div class="container">
-            <div class="cd-hero-content">
-                <a href="/" class="cd-back"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
-                <span class="badge cd-badge" id="cd-badge">Phổ biến nhất</span>
-                <h1 id="cd-title" class="split-text">Luyện thi IELTS</h1>
-                <p id="cd-subtitle">Lộ trình tối ưu hóa giúp đạt Target 7.0+, học thuật chuyên sâu và chiến thuật làm bài hiệu quả.</p>
-                <div class="cd-hero-stats">
-                    <div class="cd-stat"><i class="fa-solid fa-clock"></i><span>4-6 tháng</span></div>
-                    <div class="cd-stat"><i class="fa-solid fa-users"></i><span>Lớp nhỏ 1:8</span></div>
-                    <div class="cd-stat"><i class="fa-solid fa-certificate"></i><span>Cam kết đầu ra</span></div>
+            <div class="cdt-breadcrumb">
+                <a href="/"><i class="fa-solid fa-house"></i></a>
+                <span class="sep"><i class="fa-solid fa-chevron-right"></i></span>
+                <a href="/#courses">Danh sách khóa học</a>
+                <span class="sep"><i class="fa-solid fa-chevron-right"></i></span>
+                <span style="color:var(--text-main)">Luyện thi IELTS 7.0+</span>
+            </div>
+
+            <div class="cdt-tags">
+                <span class="cdt-tag cdt-tag--hot"><i class="fa-solid fa-fire"></i> Best Seller</span>
+                <span class="cdt-tag cdt-tag--level">Trình độ: Intermediate</span>
+                <span class="cdt-tag cdt-tag--cert"><i class="fa-solid fa-award"></i> Cam kết đầu ra</span>
+            </div>
+
+            <h1 class="cdt-title">
+                <span class="cdt-title-main">IELTS Intensive</span>
+                <span class="cdt-title-sub">Bứt phá 7.0+ trong 6 tháng</span>
+            </h1>
+
+            <p class="cdt-desc">
+                Khóa học được thiết kế chuyên biệt nhằm rèn luyện 4 kỹ năng Nghe - Nói - Đọc - Viết. Áp dụng phương pháp Blended Learning kết hợp AI để tối ưu hóa quá trình tiếp thu.
+            </p>
+
+            <div class="cdt-chips">
+                <div class="cdt-chip">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Thời lượng: 24 tuần</span>
+                </div>
+                <div class="cdt-chip">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Lớp học siêu nhỏ: 1-8 học viên</span>
+                </div>
+                <div class="cdt-chip">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>Giảng viên bản ngữ 100%</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Course Content -->
-    <section class="cd-content section">
+    <!-- Tab Bar -->
+    <div class="cdt-tabbar" id="courseTabs">
         <div class="container">
-            <div class="cd-grid">
-                <!-- Main Content -->
-                <div class="cd-main">
-                    <!-- Overview -->
-                    <div class="cd-block fade-up" id="cd-overview">
-                        <h2><i class="fa-solid fa-book-open"></i> Tổng quan khóa học</h2>
-                        <p>Chương trình IELTS tại Elite được thiết kế bởi đội ngũ chuyên gia với hơn 10 năm kinh nghiệm, tập trung vào phát triển toàn diện 4 kỹ năng: Listening, Reading, Writing, Speaking. Lộ trình cá nhân hóa giúp từng học viên tối ưu điểm số trong thời gian ngắn nhất.</p>
-                    </div>
+            <div class="cdt-tab active" onclick="scrollToSection('cd-overview')">Tổng quan</div>
+            <div class="cdt-tab" onclick="scrollToSection('cd-curriculum')">Nội dung học</div>
+            <div class="cdt-tab" onclick="scrollToSection('cd-instructor')">Giảng viên</div>
+            <div class="cdt-tab" onclick="scrollToSection('cd-review')">Đánh giá</div>
+        </div>
+    </div>
 
-                    <!-- Curriculum -->
-                    <div class="cd-block fade-up" id="cd-curriculum">
-                        <h2><i class="fa-solid fa-list-check"></i> Nội dung chương trình</h2>
-                        <div class="cd-modules">
-                            <div class="cd-module">
-                                <div class="cd-module-header">
-                                    <span class="cd-module-num">01</span>
-                                    <div>
-                                        <h4>Foundation & Vocabulary Building</h4>
-                                        <p>4 tuần · 16 buổi</p>
-                                    </div>
-                                </div>
-                                <ul>
-                                    <li>Xây dựng nền tảng từ vựng IELTS theo chủ đề</li>
-                                    <li>Phát triển kỹ năng nghe & đọc cơ bản</li>
-                                    <li>Làm quen với format đề thi IELTS</li>
-                                </ul>
-                            </div>
-                            <div class="cd-module">
-                                <div class="cd-module-header">
-                                    <span class="cd-module-num">02</span>
-                                    <div>
-                                        <h4>Skill Development</h4>
-                                        <p>6 tuần · 24 buổi</p>
-                                    </div>
-                                </div>
-                                <ul>
-                                    <li>Chiến thuật làm bài Reading & Listening nâng cao</li>
-                                    <li>Writing Task 1 & Task 2: Cấu trúc bài viết Band 7+</li>
-                                    <li>Speaking Part 1-2-3: Phương pháp phản xạ nhanh</li>
-                                </ul>
-                            </div>
-                            <div class="cd-module">
-                                <div class="cd-module-header">
-                                    <span class="cd-module-num">03</span>
-                                    <div>
-                                        <h4>Exam Mastery & Mock Tests</h4>
-                                        <p>4 tuần · 16 buổi</p>
-                                    </div>
-                                </div>
-                                <ul>
-                                    <li>Luyện đề thật với điều kiện phòng thi chuẩn</li>
-                                    <li>Phân tích lỗi sai & tối ưu chiến thuật cá nhân</li>
-                                    <li>Mock test toàn phần & feedback 1-1 từ giảng viên</li>
-                                </ul>
-                            </div>
+    <!-- Main Content Layout -->
+    <section class="section" style="padding-top: 40px;">
+        <div class="container cdt-layout">
+            
+            <!-- Left Column: Content -->
+            <div class="cdt-main">
+                
+                <!-- Overview -->
+                <div id="cd-overview" class="cdt-card cdt-anim visible">
+                    <h2 class="cdt-card__title">
+                        <i class="fa-solid fa-compass"></i>
+                        Tổng quan khóa học
+                    </h2>
+                    <p class="cdt-card__text">
+                        Chương trình luyện thi IELTS Intensive được thiết kế dựa trên các tiêu chuẩn khảo thí quốc tế mới nhất. Chúng tôi không chỉ dạy bạn các mẹo làm bài, mà còn xây dựng năng lực ngoại ngữ sâu sắc, giúp bạn sẵn sàng nhập học tại các trường Đại học hàng đầu thế giới.
+                    </p>
+                    
+                    <div class="cdt-features">
+                        <div class="cdt-feature">
+                            <div class="cdt-feature__icon"><i class="fa-solid fa-robot"></i></div>
+                            <h4>AI Chấm chữa bài</h4>
+                            <p>Writing & Speaking</p>
+                        </div>
+                        <div class="cdt-feature">
+                            <div class="cdt-feature__icon"><i class="fa-solid fa-book-open-reader"></i></div>
+                            <h4>Thư viện độc quyền</h4>
+                            <p>Hơn 500+ bài thi mẫu</p>
+                        </div>
+                        <div class="cdt-feature">
+                            <div class="cdt-feature__icon"><i class="fa-solid fa-headset"></i></div>
+                            <h4>Support 24/7</h4>
+                            <p>Giải đáp thắc mắc</p>
                         </div>
                     </div>
 
-                    <!-- Instructors -->
-                    <div class="cd-block fade-up" id="cd-instructors">
-                        <h2><i class="fa-solid fa-chalkboard-user"></i> Đội ngũ giảng viên</h2>
-                        <div class="cd-instructor-grid">
-                            <div class="cd-instructor">
-                                <img src="https://i.pravatar.cc/150?img=12" alt="Instructor">
-                                <h4>Mr. James Wilson</h4>
-                                <span>IELTS 9.0 · CELTA Certified</span>
-                                <p>Giảng viên bản ngữ với 8 năm kinh nghiệm tại Việt Nam</p>
+                    <div class="cdt-skills">
+                        <div class="cdt-skill">
+                            <span class="cdt-skill__name">Listening</span>
+                            <div class="cdt-skill__track">
+                                <div class="cdt-skill__bar" style="background: var(--cdt-accent); width: 85%;"></div>
                             </div>
-                            <div class="cd-instructor">
-                                <img src="https://i.pravatar.cc/150?img=32" alt="Instructor">
-                                <h4>Ms. Nguyễn Thùy Linh</h4>
-                                <span>IELTS 8.5 · TESOL Certified</span>
-                                <p>Chuyên gia Writing & Speaking, đào tạo 500+ học viên đạt 7.0+</p>
+                            <span class="cdt-skill__pct">85%</span>
+                        </div>
+                        <div class="cdt-skill">
+                            <span class="cdt-skill__name">Reading</span>
+                            <div class="cdt-skill__track">
+                                <div class="cdt-skill__bar" style="background: var(--cdt-purple); width: 90%;"></div>
+                            </div>
+                            <span class="cdt-skill__pct">90%</span>
+                        </div>
+                        <div class="cdt-skill">
+                            <span class="cdt-skill__name">Writing</span>
+                            <div class="cdt-skill__track">
+                                <div class="cdt-skill__bar" style="background: var(--cdt-emerald); width: 75%;"></div>
+                            </div>
+                            <span class="cdt-skill__pct">75%</span>
+                        </div>
+                        <div class="cdt-skill">
+                            <span class="cdt-skill__name">Speaking</span>
+                            <div class="cdt-skill__track">
+                                <div class="cdt-skill__bar" style="background: var(--cdt-rose); width: 80%;"></div>
+                            </div>
+                            <span class="cdt-skill__pct">80%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Curriculum -->
+                <div id="cd-curriculum" class="cdt-card cdt-anim visible">
+                    <h2 class="cdt-card__title">
+                        <i class="fa-solid fa-cubes"></i>
+                        Lộ trình bài giảng
+                    </h2>
+                    
+                    <div class="cdt-modules">
+                        <div class="cdt-module">
+                            <div class="cdt-module__head">
+                                <div class="cdt-module__num">01</div>
+                                <div>
+                                    <h4>Foundation - Nền tảng cấu trúc ngữ pháp</h4>
+                                    <p>Tuần 1 - Tuần 4 &nbsp;&bull;&nbsp; 12 bài giảng</p>
+                                </div>
+                            </div>
+                            <ul>
+                                <li>Review lại 12 thì cơ bản và nâng cao trong tiếng Anh.</li>
+                                <li>Cấu trúc câu phức, câu ghép trong học thuật.</li>
+                                <li>Phân tích logic lập luận bài Writing Task 1.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cdt-module">
+                            <div class="cdt-module__head">
+                                <div class="cdt-module__num">02</div>
+                                <div>
+                                    <h4>Skill Builder - Phát triển 4 kỹ năng</h4>
+                                    <p>Tuần 5 - Tuần 12 &nbsp;&bull;&nbsp; 24 bài giảng</p>
+                                </div>
+                            </div>
+                            <ul>
+                                <li>Kỹ năng Skimming và Scanning tốc độ cao.</li>
+                                <li>Mở rộng tệp từ vựng theo 10 chủ đề phổ biến nhất.</li>
+                                <li>Luyện phát âm chuẩn IPA, rèn Speaking Part 1 & 2.</li>
+                            </ul>
+                        </div>
+
+                        <div class="cdt-module">
+                            <div class="cdt-module__head">
+                                <div class="cdt-module__num">03</div>
+                                <div>
+                                    <h4>Mastery & Mock Test - Luyện đề chuyên sâu</h4>
+                                    <p>Tuần 13 - Tuần 24 &nbsp;&bull;&nbsp; 15 bài giảng & 5 Mock Tests</p>
+                                </div>
+                            </div>
+                            <ul>
+                                <li>Chữa chi tiết bộ đề Cambridge IELTS mới nhất.</li>
+                                <li>Thi thử mô phỏng phòng thi thật 100%.</li>
+                                <li>Tối ưu điểm Task 2 Writing và Speaking Part 3.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructor -->
+                <div id="cd-instructor" class="cdt-card cdt-anim visible">
+                    <h2 class="cdt-card__title">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        Ban Cố vấn & Giảng viên
+                    </h2>
+                    
+                    <div class="cdt-instructors">
+                        <div class="cdt-instructor">
+                            <div class="cdt-instructor__avatar">
+                                <img src="/assets/english_course.png" alt="Instructor">
+                                <div class="cdt-badge"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <h4>Mr. Richard Dawkins</h4>
+                            <span>Cố vấn Chuyên môn (CELTA)</span>
+                            <p>Hơn 12 năm kinh nghiệm luyện thi IELTS tại các quốc gia Châu Á. Cựu giám khảo IELTS.</p>
+                        </div>
+                        <div class="cdt-instructor">
+                            <div class="cdt-instructor__avatar">
+                                <img src="/assets/english_course.png" alt="Instructor">
+                                <div class="cdt-badge"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <h4>Ms. Katherine Pearl</h4>
+                            <span>Giảng viên Speaking (IELTS 9.0)</span>
+                            <p>Tốt nghiệp Thạc sĩ TESOL tại ĐH Oxford. Nổi bật với phương pháp kích hoạt tư duy ngôn ngữ.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review -->
+                <div id="cd-review" class="cdt-card cdt-anim visible">
+                    <h2 class="cdt-card__title">
+                        <i class="fa-solid fa-star"></i>
+                        Học viên nói gì?
+                    </h2>
+                    
+                    <div class="cdt-review">
+                        <i class="fa-solid fa-quote-left cdt-review__icon"></i>
+                        <blockquote>
+                            "Sau 6 tháng theo học tại Elite, mình đã chinh phục thành công IELTS 7.5 và trúng tuyển học bổng du học Úc. Giảng viên ở đây không chỉ dạy ngôn ngữ mà còn truyền cảm hứng học tập rất nhiều. Phương pháp chấm chữa bằng AI cũng giúp mình nhận ra lỗi sai lập tức."
+                        </blockquote>
+                        <div class="cdt-review__author">
+                            <img src="/assets/english_course.png" alt="Author">
+                            <div>
+                                <strong>Nguyễn Trọng Khoa</strong>
+                                <span>IELTS 7.5 - Du học sinh Úc</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sidebar -->
-                <aside class="cd-sidebar">
-                    <div class="cd-price-card fade-up">
-                        <div class="cd-price-header">
-                            <img src="/assets/english_course.png" alt="Course" class="cd-price-img">
+                <!-- Call to action glowing -->
+                <div class="cdt-cta cdt-anim visible">
+                    <h2>Đăng ký ngay bây giờ!</h2>
+                    <p>Nhận ngay bộ tài liệu tự học IELTS cấp tốc trị giá 2.000.000 VNĐ khi ghi danh hôm nay.</p>
+                    <button class="btn btn-primary magnetic-btn">Đăng ký tư vấn lộ trình <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                
+                <!-- Related courses -->
+                <h3 style="margin-top: 40px; font-size: 22px; margin-bottom: 20px;">Khóa học tương tự</h3>
+                <div class="cdt-related cdt-anim visible">
+                    <a href="/course-detail/index.html" class="cdt-related-card">
+                        <div class="cdt-related-card__img">
+                            <img src="/assets/english_course.png" alt="Course">
                         </div>
-                        <div class="cd-price-body">
-                            <div class="cd-price-row">
-                                <span>Học phí</span>
-                                <strong class="cd-price">8.900.000đ</strong>
-                            </div>
-                            <div class="cd-price-row">
-                                <span>Thời lượng</span>
-                                <span>56 buổi · 4-6 tháng</span>
-                            </div>
-                            <div class="cd-price-row">
-                                <span>Lịch học</span>
-                                <span>T2-T4-T6 hoặc T3-T5-T7</span>
-                            </div>
-                            <div class="cd-price-row">
-                                <span>Hình thức</span>
-                                <span>Online & Offline</span>
-                            </div>
-                            <a href="#" class="btn btn-primary btn-large cd-enroll-btn">
-                                Đăng ký ngay <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                            <a href="#" class="btn btn-secondary btn-large cd-consult-btn">
-                                <i class="fa-solid fa-phone"></i> Tư vấn miễn phí
-                            </a>
-                            <div class="cd-guarantee">
-                                <i class="fa-solid fa-shield-halved"></i>
-                                <span>Cam kết hoàn tiền 100% nếu không hài lòng sau 7 ngày</span>
-                            </div>
+                        <div class="cdt-related-card__body">
+                            <h4>Giao tiếp Quốc tế</h4>
+                            <p>Tự tin làm việc toàn cầu</p>
+                            <span class="cdt-related-card__link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></span>
                         </div>
-                    </div>
+                    </a>
+                    <a href="/course-detail/index.html" class="cdt-related-card">
+                        <div class="cdt-related-card__img">
+                            <img src="/assets/english_course.png" alt="Course">
+                        </div>
+                        <div class="cdt-related-card__body">
+                            <h4>IELTS Foundation</h4>
+                            <p>Dành cho người mất gốc</p>
+                            <span class="cdt-related-card__link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                    <a href="/course-detail/index.html" class="cdt-related-card">
+                        <div class="cdt-related-card__img">
+                            <img src="/assets/english_course.png" alt="Course">
+                        </div>
+                        <div class="cdt-related-card__body">
+                            <h4>Business English</h4>
+                            <p>Doanh nghiệp & Startup</p>
+                            <span class="cdt-related-card__link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
 
-                    <div class="cd-features-card fade-up">
-                        <h3>Đặc quyền khóa học</h3>
-                        <ul>
-                            <li><i class="fa-solid fa-check-circle"></i> Cam kết đầu ra bằng văn bản</li>
-                            <li><i class="fa-solid fa-check-circle"></i> Chấm chữa Writing & Speaking 1-1</li>
-                            <li><i class="fa-solid fa-check-circle"></i> Tài liệu Digital độc quyền</li>
-                            <li><i class="fa-solid fa-check-circle"></i> Nhóm hỗ trợ Zalo 24/7</li>
-                            <li><i class="fa-solid fa-check-circle"></i> Mock test miễn phí hàng tuần</li>
-                            <li><i class="fa-solid fa-check-circle"></i> Học lại miễn phí nếu chưa đạt</li>
-                        </ul>
-                    </div>
-                </aside>
             </div>
+
+            <!-- Right Column: Sidebar -->
+            <div class="cdt-sidebar">
+                <div class="cdt-price cdt-anim visible">
+                    <div class="cdt-price__img">
+                        <img src="/assets/english_course.png" alt="Card Image">
+                        <div class="cdt-price__ribbon">HOT</div>
+                    </div>
+                    <div class="cdt-price__body">
+                        <div class="cdt-price__amount">
+                            <span class="cdt-price__old">8.500.000 đ</span>
+                            <span class="cdt-price__current">5.900.000 đ</span>
+                            <div class="cdt-price__note">Áp dụng đến hết tuần này</div>
+                        </div>
+
+                        <div class="cdt-price__rows">
+                            <div class="cdt-price__row">
+                                <span class="lbl"><i class="fa-solid fa-calendar-check"></i> Khai giảng</span>
+                                <span class="val">15/09/2026</span>
+                            </div>
+                            <div class="cdt-price__row">
+                                <span class="lbl"><i class="fa-solid fa-clock"></i> Thời gian</span>
+                                <span class="val">19:30 - 21:00</span>
+                            </div>
+                            <div class="cdt-price__row">
+                                <span class="lbl"><i class="fa-solid fa-user-group"></i> Lịch học</span>
+                                <span class="val">T2 - T4 - T6</span>
+                            </div>
+                            <div class="cdt-price__row">
+                                <span class="lbl"><i class="fa-solid fa-location-dot"></i> Trạng thái</span>
+                                <span class="val" style="color:var(--cdt-emerald);">Sắp đầy (Còn 2 slot)</span>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            <i class="fa-solid fa-cart-shopping"></i> Mua khóa học ngay
+                        </button>
+                        <button class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                            <i class="fa-regular fa-comment-dots"></i> Tư vấn thêm
+                        </button>
+
+                        <div class="cdt-guarantee">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <div>Bảo vệ quyền lợi học viên! Cam kết đầu ra bằng văn bản. Học lại miễn phí nếu không đạt kết quả mong muốn.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extra Sidebar Perks -->
+                <div class="cdt-perks cdt-anim visible">
+                    <h3><i class="fa-solid fa-bolt"></i> Đặc quyền học viên</h3>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> Truy cập thư viện Online trọn đời</li>
+                        <li><i class="fa-solid fa-check"></i> Chấm chữa Writing AI Premium</li>
+                        <li><i class="fa-solid fa-check"></i> Phỏng vấn thử Speaking 1-1</li>
+                        <li><i class="fa-solid fa-check"></i> Môi trường nói tiếng Anh liên tục</li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -188,11 +381,16 @@
     <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-brand">
-                <a href="/" class="logo">
+                <a href="#" class="logo">
                     <span class="logo-icon"><i class="fa-solid fa-globe"></i></span>
                     ELITE
                 </a>
                 <p>Nền tảng đào tạo ngoại ngữ số 1, dẫn đầu xu hướng và kiến tạo giá trị toàn cầu cho người Việt.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                </div>
             </div>
             <div class="footer-links">
                 <h4>Chương trình</h4>
@@ -200,12 +398,23 @@
                     <li><a href="#">Luyện thi IELTS</a></li>
                     <li><a href="#">Tiếng Anh Giao Tiếp</a></li>
                     <li><a href="#">Tiếng Anh Doanh Nghiệp</a></li>
+                    <li><a href="#">Tiếng Anh Trẻ Em</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Thông tin chung</h4>
+                <ul>
+                    <li><a href="#">Về chúng tôi</a></li>
+                    <li><a href="#">Tin tức & Sự kiện</a></li>
+                    <li><a href="#">Tuyển dụng</a></li>
+                    <li><a href="#">Liên hệ</a></li>
                 </ul>
             </div>
             <div class="footer-contact">
                 <h4>Trụ sở chính</h4>
                 <p><i class="fa-solid fa-location-dot"></i> Chung cư Ecogarden, Phường Vỹ Dạ, TP.Huế</p>
                 <p><i class="fa-solid fa-phone"></i> 0825 010 345</p>
+                <p><i class="fa-solid fa-envelope"></i> mayoneltd2026@gmail.com</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -216,6 +425,41 @@
     </footer>
 
     <script src="/js/main.js"></script>
-</body>
+    <script>
+        // Simple JS for Tab switching
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                const y = el.getBoundingClientRect().top + window.scrollY - 140; 
+                window.scrollTo({top: y, behavior: 'smooth'});
+            }
+        }
 
+        // Add scroll spy for tabs
+        window.addEventListener('scroll', () => {
+            const sections = ['cd-overview', 'cd-curriculum', 'cd-instructor', 'cd-review'];
+            const tabs = document.querySelectorAll('.cdt-tab');
+            let current = '';
+
+            sections.forEach(sec => {
+                const element = document.getElementById(sec);
+                if(element) {
+                    const top = element.getBoundingClientRect().top;
+                    if(top <= 200) current = sec;
+                }
+            });
+
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if(tab.getAttribute('onclick').includes(current)) {
+                    tab.classList.add('active');
+                }
+            });
+            // Fallback for first tab
+            if(!current && window.scrollY < 400 && tabs.length > 0) {
+                tabs[0].classList.add('active');
+            }
+        });
+    </script>
+</body>
 </html>

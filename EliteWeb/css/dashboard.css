@@ -729,3 +729,626 @@
     flex-shrink: 0;
     margin-left: 12px;
 }
+
+/* ========================================================
+   ========   PREMIUM DASHBOARD ANIMATIONS   ========
+   ======================================================== */
+
+/* ===== Animated Loading Overlay ===== */
+@keyframes loadingPulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+#loadingOverlay > div {
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+/* ===== Sidebar Hover Glow ===== */
+.sidebar-menu a {
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-menu a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.06), transparent);
+    transition: left 0.5s ease;
+}
+
+.sidebar-menu a:hover::before {
+    left: 100%;
+}
+
+.sidebar-menu a.active {
+    position: relative;
+}
+
+.sidebar-menu a.active::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow, rgba(59, 130, 246, 0.5));
+    animation: activeDotPulse 2s infinite;
+}
+
+.admin-sidebar .sidebar-menu a.active::after {
+    background: var(--secondary);
+    box-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
+}
+
+@keyframes activeDotPulse {
+    0%, 100% { box-shadow: 0 0 4px currentColor; opacity: 1; }
+    50% { box-shadow: 0 0 14px currentColor; opacity: 0.7; }
+}
+
+/* ===== Sidebar Logo Entrance ===== */
+.sidebar .logo {
+    animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.sidebar-menu li {
+    animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.sidebar-menu li:nth-child(1) { animation-delay: 0.1s; }
+.sidebar-menu li:nth-child(2) { animation-delay: 0.15s; }
+.sidebar-menu li:nth-child(3) { animation-delay: 0.2s; }
+.sidebar-menu li:nth-child(4) { animation-delay: 0.25s; }
+.sidebar-menu li:nth-child(5) { animation-delay: 0.3s; }
+.sidebar-menu li:nth-child(6) { animation-delay: 0.35s; }
+.sidebar-menu li:nth-child(7) { animation-delay: 0.4s; }
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* ===== Dashboard Header Entrance ===== */
+.dashboard-header {
+    animation: headerSlideDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.2s;
+}
+
+@keyframes headerSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.greeting {
+    background: linear-gradient(to right, #fff, #94A3B8, #fff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmerDash 4s linear infinite;
+}
+
+@keyframes shimmerDash {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* ===== Stat Cards Staggered Entrance ===== */
+.ov-stat-card {
+    animation: statCardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    position: relative;
+    overflow: hidden;
+}
+
+.ov-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.ov-stat-card:hover::before {
+    opacity: 1;
+}
+
+.ov-stat-card:hover {
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.12);
+}
+
+.overview-stats .ov-stat-card:nth-child(1) { animation-delay: 0.3s; }
+.overview-stats .ov-stat-card:nth-child(2) { animation-delay: 0.4s; }
+.overview-stats .ov-stat-card:nth-child(3) { animation-delay: 0.5s; }
+.overview-stats .ov-stat-card:nth-child(4) { animation-delay: 0.6s; }
+
+@keyframes statCardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== Stat Icon Bounce ===== */
+.ov-stat-icon {
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+}
+
+.ov-stat-card:hover .ov-stat-icon {
+    transform: scale(1.15) rotate(-5deg);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Stat Value Counter Glow ===== */
+.ov-stat-value {
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.ov-stat-card:hover .ov-stat-value {
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* ===== Tab Transition Enhancement ===== */
+@keyframes tabFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+.tab-content {
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===== Dashboard Section Reveal ===== */
+.dashboard-section {
+    animation: sectionReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease, left 1.5s ease;
+}
+
+.dashboard-section:hover::before {
+    opacity: 0.5;
+    left: 100%;
+}
+
+@keyframes sectionReveal {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Table Row Slide In ===== */
+.dash-table tbody tr {
+    animation: tableRowSlide 0.4s ease both;
+}
+
+.dash-table tbody tr:nth-child(1) { animation-delay: 0.05s; }
+.dash-table tbody tr:nth-child(2) { animation-delay: 0.1s; }
+.dash-table tbody tr:nth-child(3) { animation-delay: 0.15s; }
+.dash-table tbody tr:nth-child(4) { animation-delay: 0.2s; }
+.dash-table tbody tr:nth-child(5) { animation-delay: 0.25s; }
+.dash-table tbody tr:nth-child(6) { animation-delay: 0.3s; }
+.dash-table tbody tr:nth-child(7) { animation-delay: 0.35s; }
+.dash-table tbody tr:nth-child(8) { animation-delay: 0.4s; }
+
+@keyframes tableRowSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.dash-table tbody tr:hover {
+    background: rgba(59, 130, 246, 0.06);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* ===== Activity Item Entrance ===== */
+.activity-item {
+    animation: activitySlide 0.4s ease both;
+    transition: transform 0.3s ease, background 0.3s ease;
+    padding-left: 10px;
+    border-radius: 8px;
+}
+
+.activity-item:nth-child(1) { animation-delay: 0.1s; }
+.activity-item:nth-child(2) { animation-delay: 0.2s; }
+.activity-item:nth-child(3) { animation-delay: 0.3s; }
+.activity-item:nth-child(4) { animation-delay: 0.4s; }
+.activity-item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes activitySlide {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.activity-item:hover {
+    transform: translateX(6px);
+    background: rgba(59, 130, 246, 0.04);
+}
+
+/* ===== Activity Dot Pulse ===== */
+.activity-dot {
+    animation: dotPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+    0%, 100% { box-shadow: 0 0 4px var(--accent-glow, rgba(59, 130, 246, 0.5)); }
+    50% { box-shadow: 0 0 14px var(--accent-glow, rgba(59, 130, 246, 0.5)), 0 0 24px rgba(59, 130, 246, 0.2); }
+}
+
+/* ===== Progress Bar Shimmer ===== */
+.progress-fill {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -200%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: progressShimmer 2.5s infinite;
+}
+
+@keyframes progressShimmer {
+    0% { left: -200%; }
+    100% { left: 200%; }
+}
+
+/* ===== Course Card Entrance ===== */
+.dash-course-card {
+    animation: courseCardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    position: relative;
+    overflow: hidden;
+}
+
+.dash-course-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.dash-course-card:hover::after {
+    opacity: 1;
+}
+
+.dash-courses .dash-course-card:nth-child(1) { animation-delay: 0.1s; }
+.dash-courses .dash-course-card:nth-child(2) { animation-delay: 0.2s; }
+.dash-courses .dash-course-card:nth-child(3) { animation-delay: 0.3s; }
+.dash-courses .dash-course-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes courseCardPop {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== Course Card Image Zoom ===== */
+.dcc-header img {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.dash-course-card:hover .dcc-header img {
+    transform: scale(1.08) rotate(-2deg);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+}
+
+/* ===== Eval Card Gradient Border Animation ===== */
+.eval-card {
+    position: relative;
+    overflow: hidden;
+    animation: evaluationEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.eval-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3B82F6, #8B5CF6, #F43F5E, #3B82F6);
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: gradientSlide 3s linear infinite;
+}
+
+.eval-card:hover::before {
+    opacity: 1;
+}
+
+@keyframes evaluationEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes gradientSlide {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+}
+
+/* ===== Eval Score Ring Animation ===== */
+.eval-score-ring {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    animation: ringPopIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.eval-score-ring:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), 0 0 40px rgba(59, 130, 246, 0.1);
+}
+
+@keyframes ringPopIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5) rotate(-10deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+}
+
+/* ===== Upcoming Item Slide ===== */
+.upcoming-item {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.4s ease,
+                border-color 0.3s ease;
+}
+
+.upcoming-item:hover {
+    transform: translateX(8px);
+    border-color: rgba(59, 130, 246, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Lesson Card Enhanced ===== */
+.lesson-card {
+    animation: lessonSlideIn 0.5s ease both;
+}
+
+.lesson-card:nth-child(1) { animation-delay: 0.05s; }
+.lesson-card:nth-child(2) { animation-delay: 0.1s; }
+.lesson-card:nth-child(3) { animation-delay: 0.15s; }
+.lesson-card:nth-child(4) { animation-delay: 0.2s; }
+.lesson-card:nth-child(5) { animation-delay: 0.25s; }
+.lesson-card:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes lessonSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.lesson-card:hover {
+    transform: translateX(6px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.lesson-card .lc-number {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.3s ease, color 0.3s ease;
+}
+
+.lesson-card:hover .lc-number {
+    transform: scale(1.15);
+    background: var(--accent);
+    color: white;
+}
+
+/* ===== Avatar Glow ===== */
+.avatar {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s ease;
+    cursor: default;
+}
+
+.avatar:hover {
+    transform: scale(1.1) rotate(-3deg);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.15);
+}
+
+/* ===== Status Badge Micro-animation ===== */
+.dash-status {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dash-status:hover {
+    transform: scale(1.08);
+}
+
+.status-active {
+    animation: statusGlow 3s ease-in-out infinite;
+}
+
+@keyframes statusGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    50% { box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.15); }
+}
+
+/* ===== Button Click Ripple Effect ===== */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+}
+
+.btn:active::after {
+    width: 300px;
+    height: 300px;
+    opacity: 1;
+    transition: width 0s, height 0s, opacity 0s;
+}
+
+/* ===== Floating Ambient Particles (CSS-only) ===== */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 270px;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(2px 2px at 20% 30%, rgba(59, 130, 246, 0.15), transparent),
+        radial-gradient(2px 2px at 40% 70%, rgba(139, 92, 246, 0.1), transparent),
+        radial-gradient(2px 2px at 60% 20%, rgba(59, 130, 246, 0.12), transparent),
+        radial-gradient(2px 2px at 80% 50%, rgba(244, 63, 94, 0.08), transparent),
+        radial-gradient(1.5px 1.5px at 15% 60%, rgba(59, 130, 246, 0.1), transparent),
+        radial-gradient(1.5px 1.5px at 70% 80%, rgba(139, 92, 246, 0.08), transparent),
+        radial-gradient(1px 1px at 50% 10%, rgba(59, 130, 246, 0.12), transparent),
+        radial-gradient(1px 1px at 90% 90%, rgba(16, 185, 129, 0.08), transparent);
+    animation: ambientDrift 25s linear infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+@keyframes ambientDrift {
+    0% { transform: translateX(0) translateY(0); }
+    100% { transform: translateX(-30px) translateY(-20px); }
+}
+
+.dashboard-main {
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== Scroll Progress Bar ===== */
+.dashboard-main::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 270px;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), #8B5CF6, var(--secondary));
+    z-index: 1000;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.1s linear;
+}
+
+/* ===== Focus Glow on Inputs ===== */
+.form-control:focus,
+.search-input:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.08);
+}
+
+/* ===== Responsive Animation Adjustments ===== */
+@media (max-width: 768px) {
+    .dashboard-body::before {
+        left: 0;
+    }
+
+    .dashboard-main::before {
+        left: 0;
+    }
+
+    .sidebar-menu li {
+        animation: none;
+    }
+
+    .ov-stat-card,
+    .dash-course-card,
+    .eval-card {
+        animation-delay: 0s !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
