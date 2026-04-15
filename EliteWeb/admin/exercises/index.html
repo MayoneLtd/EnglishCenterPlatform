@@ -265,7 +265,7 @@
                 </div>
                 <button class="ex-btn ex-btn-primary" onclick="switchSection('create')">+ Tạo bài mới</button>
             </div>
-            <div class="exercise-cards-grid" id="libraryGrid"></div>
+            <div id="libraryGrid"></div>
             <div id="libraryEmpty" class="empty-state" style="display:none;">
                 <div class="empty-icon">📭</div>
                 <h3 class="empty-title">Chưa có bài tập nào</h3>
@@ -274,6 +274,26 @@
         </div>
 
     </main>
+
+    <!-- Exercise Detail Modal -->
+    <div class="modal-overlay" id="exerciseDetailModal">
+        <div class="modal-container" style="max-width:800px; width:100%; max-height:85vh; display:flex; flex-direction:column; background:var(--bg-dark); border:1px solid rgba(255,255,255,0.1); border-radius:16px; overflow:hidden; position:relative;">
+            <div class="modal-header" style="padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.05); flex-shrink:0; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h2 class="modal-title" id="detailModalTitle" style="font-size:20px; font-weight:700; color:var(--text-light); margin-bottom:4px;">Chi tiết bài tập</h2>
+                    <p class="modal-subtitle" id="detailModalSubtitle" style="font-size:13px; color:var(--text-muted);"></p>
+                </div>
+                <button class="modal-close" style="background:transparent; border:none; color:var(--text-muted); font-size:24px; cursor:pointer;" onclick="document.getElementById('exerciseDetailModal').classList.remove('active')">✕</button>
+            </div>
+            <div style="flex:1; overflow-y:auto; padding:24px; background:var(--bg-dark);">
+                <div id="detailQuestionsList" style="display:flex; flex-direction:column; gap:16px;"></div>
+            </div>
+            <div style="padding:16px 24px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:flex-end; gap:12px;">
+                <button class="ex-btn ex-btn-secondary" onclick="document.getElementById('exerciseDetailModal').classList.remove('active')">Đóng lại</button>
+                <button class="ex-btn ex-btn-primary" onclick="saveViewedExercise()">💾 Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast -->
     <div id="toastContainer"></div>
@@ -286,6 +306,7 @@
         // ===== State =====
         let currentProfile = null;
         let generatedQuestions = null;
+        let currentViewedExercise = null;
         let ocrImages = [];
         let ocrResult = '';
         const TYPE_LABELS = {
@@ -578,22 +599,42 @@
                     return;
                 }
                 empty.style.display = 'none';
-                grid.innerHTML = exercises.map(ex => `
-                    <div class="exercise-card" onclick="viewExerciseDetail('${ex.id}')">
-                        <div class="card-header">
-                            <h3 class="card-title">${ex.title}</h3>
-                            <span class="ex-badge ${ex.difficulty === 'Dễ' ? 'ex-badge-emerald' : ex.difficulty === 'Trung bình' ? 'ex-badge-amber' : 'ex-badge-rose'}">${ex.difficulty}</span>
+                
+                const grouped = {};
+                exercises.forEach(ex => {
+                    const g = ex.grade || 'Chung';
+                    if (!grouped[g]) grouped[g] = [];
+                    grouped[g].push(ex);
+                });
+                
+                let html = '';
+                for (const grade in grouped) {
+                    html += `
+                    <div style="margin-bottom:32px; width:100%;">
+                        <div style="display:flex;align-items:center;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;">
+                            <h3 style="font-size:20px; font-weight:600; color:var(--text-light); margin:0;"><i class="fa-solid fa-folder-open" style="color:var(--secondary);margin-right:8px;"></i> ${grade}</h3>
+                            <span style="margin-left:12px;font-size:12px;background:rgba(255,255,255,0.1);padding:4px 10px;border-radius:20px;color:var(--text-muted);font-weight:600;">${grouped[grade].length} bài tập</span>
                         </div>
-                        <p class="card-desc">${ex.description || ''}</p>
-                        <div class="card-meta">
-                            <span>🏫 ${ex.grade || 'Chung'}</span>
-                            <span>📋 ${ex.question_count} câu</span>
-                            <span>📅 ${new Date(ex.created_at).toLocaleDateString('vi-VN')}</span>
+                        <div class="exercise-cards-grid">
+                            ${grouped[grade].map(ex => `
+                                <div class="exercise-card" onclick="viewExerciseDetail('${ex.id}')">
+                                    <div class="card-header">
+                                        <h3 class="card-title">${ex.title}</h3>
+                                        <span class="ex-badge ${ex.difficulty === 'Dễ' ? 'ex-badge-emerald' : ex.difficulty === 'Trung bình' ? 'ex-badge-amber' : 'ex-badge-rose'}">${ex.difficulty}</span>
+                                    </div>
+                                    <p class="card-desc">${ex.description || ''}</p>
+                                    <div class="card-meta">
+                                        <span>📋 ${ex.question_count} câu</span>
+                                        <span>📅 ${new Date(ex.created_at).toLocaleDateString('vi-VN')}</span>
+                                    </div>
+                                    <div style="margin-top:10px;display:flex;gap:6px;">
+                                        <button class="ex-btn ex-btn-sm ex-btn-danger" onclick="event.stopPropagation();deleteExerciseAction('${ex.id}')">🗑️ Xóa</button>
+                                    </div>
+                                </div>`).join('')}
                         </div>
-                        <div style="margin-top:10px;display:flex;gap:6px;">
-                            <button class="ex-btn ex-btn-sm ex-btn-danger" onclick="event.stopPropagation();deleteExerciseAction('${ex.id}')">🗑️ Xóa</button>
-                        </div>
-                    </div>`).join('');
+                    </div>`;
+                }
+                grid.innerHTML = html;
             } catch (err) {
                 showToast('Lỗi tải thư viện: ' + err.message, 'error');
             }
@@ -610,8 +651,60 @@
             }
         }
 
-        function viewExerciseDetail(id) {
-            showToast('Hãy xem chi tiết bài nộp trong trang Quản lý khóa học', 'info');
+        async function viewExerciseDetail(id) {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            try {
+                const ex = await getExerciseById(id);
+                currentViewedExercise = ex; // Lưu lại global state để edit
+                
+                document.getElementById('detailModalTitle').textContent = ex.title;
+                document.getElementById('detailModalSubtitle').textContent = `🏫 ${ex.grade || 'Chung'}  |  🎯 ${ex.difficulty}  |  📋 ${ex.question_count} câu`;
+                
+                const container = document.getElementById('detailQuestionsList');
+                if (!ex.questions || ex.questions.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">Bài tập này chưa có nội dung câu hỏi.</p>';
+                } else {
+                    container.innerHTML = ex.questions.map((q, i) => `
+                        <div class="generated-question-item" style="padding:20px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+                            <div class="q-header" style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+                                <div class="q-number" style="font-weight:600; color:var(--accent);">Câu ${i + 1} — ${TYPE_LABELS[q.type] || '📝 ' + q.type}</div>
+                                <span style="font-size:12px;color:var(--text-muted);"><i class="fa-solid fa-pen"></i> Click vào văn bản để sửa</span>
+                            </div>
+                            <div class="q-content">
+                                ${q.instruction ? `<div class="q-instruction" contenteditable="true" onblur="currentViewedExercise.questions[${i}].instruction = this.innerText" style="color:var(--text-muted); font-size:13px; margin-bottom:8px;">${q.instruction}</div>` : ''}
+                                <div class="q-question" contenteditable="true" onblur="currentViewedExercise.questions[${i}].question = this.innerText" style="font-size:15px; font-weight:500; margin-bottom:12px; color:var(--text-light);">${q.question}</div>
+                                ${q.type === 'multiple_choice' && q.options ? `<div style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">${q.options.map((o, j) => `<div style="padding:8px 12px; font-size:14px; background:rgba(255,255,255,0.02); border-radius:8px; border:1px solid ${j === q.correctIndex ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.05)'}; color:${j === q.correctIndex ? '#10b981' : 'var(--text-muted)'}; display:flex; gap:8px;"><span>${String.fromCharCode(65+j)}.</span> <span style="flex:1;" contenteditable="true" onblur="currentViewedExercise.questions[${i}].options[${j}] = this.innerText">${o}</span> ${j === q.correctIndex ? '<span style="margin-left:auto;">✓</span>' : ''}</div>`).join('')}</div>` : ''}
+                                ${q.sampleAnswer ? `<div class="q-answer" style="margin-top:16px; padding:12px; background:rgba(16,185,129,0.1); border-left:4px solid #10b981; border-radius:0 8px 8px 0; display:flex; flex-direction:column;">
+                                    <div style="font-size:12px; font-weight:700; color:#10b981; margin-bottom:4px;">ĐÁP ÁN</div>
+                                    <div contenteditable="true" onblur="currentViewedExercise.questions[${i}].sampleAnswer = this.innerText" style="font-size:14px; color:var(--text-light);">${q.sampleAnswer}</div>
+                                </div>` : ''}
+                                ${q.hints ? `<div class="q-hints" style="margin-top:12px; padding:12px; background:rgba(245,158,11,0.08); border-left:4px solid #f59e0b; border-radius:0 8px 8px 0; display:flex; flex-direction:column;">
+                                    <div style="font-size:12px; font-weight:700; color:#f59e0b; margin-bottom:4px;">GỢI Ý</div>
+                                    <div contenteditable="true" onblur="currentViewedExercise.questions[${i}].hints = this.innerText" style="font-size:14px; color:var(--text-light);">${q.hints}</div>
+                                </div>` : ''}
+                            </div>
+                        </div>`).join('');
+                }
+                const modal = document.getElementById('exerciseDetailModal');
+                modal.classList.add('active');
+            } catch (err) {
+                showToast('Lỗi xem chi tiết: ' + err.message, 'error');
+            }
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        async function saveViewedExercise() {
+            if (!currentViewedExercise) return;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            try {
+                await updateExercise(currentViewedExercise.id, { questions: currentViewedExercise.questions });
+                showToast('Đã cập nhật bài tập thành công!', 'success');
+                document.getElementById('exerciseDetailModal').classList.remove('active');
+                loadLibrary(); // Reload list to reflect any potential changes
+            } catch (err) {
+                showToast('Lỗi cập nhật: ' + err.message, 'error');
+            }
+            document.getElementById('loadingOverlay').style.display = 'none';
         }
 
 
