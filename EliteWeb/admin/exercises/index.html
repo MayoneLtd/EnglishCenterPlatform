@@ -10,6 +10,24 @@
     <link rel="stylesheet" href="/css/exercise.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [contenteditable="true"] {
+            outline: none;
+            border: 1px dashed transparent;
+            border-radius: 4px;
+            padding: 2px 4px;
+            transition: all 0.2s ease;
+        }
+        [contenteditable="true"]:hover {
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.03);
+        }
+        [contenteditable="true"]:focus {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.08);
+            cursor: text;
+        }
+    </style>
 </head>
 <body class="dashboard-body">
 
@@ -483,15 +501,16 @@
                     <div class="q-header">
                         <div class="q-number">Câu ${i + 1} — ${TYPE_LABELS[q.type] || '📝 ' + q.type}</div>
                         <div class="q-actions">
-                            <button class="q-action-btn q-action-delete" onclick="deleteQuestion(${i})">🗑️</button>
+                            <span style="font-size:12px;color:var(--text-muted);margin-right:8px;"><i class="fa-solid fa-pen"></i> Click để sửa</span>
+                            <button class="q-action-btn q-action-delete" title="Xóa câu hỏi" onclick="deleteQuestion(${i})">🗑️</button>
                         </div>
                     </div>
                     <div class="q-content">
-                        ${q.instruction ? `<div class="q-instruction">${q.instruction}</div>` : ''}
-                        <div class="q-question">${q.question}</div>
-                        ${q.type === 'multiple_choice' && q.options ? `<div style="margin-top:8px;">${q.options.map((o, j) => `<div style="padding:4px 0;font-size:13px;color:${j === q.correctIndex ? '#10b981' : 'var(--text-muted)'};">${String.fromCharCode(65+j)}. ${o} ${j === q.correctIndex ? '✓' : ''}</div>`).join('')}</div>` : ''}
-                        ${q.sampleAnswer ? `<div class="q-answer">✅ Đáp án: ${q.sampleAnswer}</div>` : ''}
-                        ${q.hints ? `<div class="q-hints">💡 ${q.hints}</div>` : ''}
+                        ${q.instruction ? `<div class="q-instruction" contenteditable="true" onblur="generatedQuestions[${i}].instruction = this.innerText">${q.instruction}</div>` : ''}
+                        <div class="q-question" contenteditable="true" onblur="generatedQuestions[${i}].question = this.innerText">${q.question}</div>
+                        ${q.type === 'multiple_choice' && q.options ? `<div style="margin-top:8px;">${q.options.map((o, j) => `<div style="padding:4px 0;font-size:13px;color:${j === q.correctIndex ? '#10b981' : 'var(--text-muted)'}; display:flex; gap:6px; align-items:center;">${String.fromCharCode(65+j)}. <span style="flex:1;" contenteditable="true" onblur="generatedQuestions[${i}].options[${j}] = this.innerText">${o}</span> ${j === q.correctIndex ? '✓' : ''}</div>`).join('')}</div>` : ''}
+                        ${q.sampleAnswer ? `<div class="q-answer" style="display:flex; gap:6px;">✅ Đáp án: <span style="flex:1;color:#10b981;" contenteditable="true" onblur="generatedQuestions[${i}].sampleAnswer = this.innerText">${q.sampleAnswer}</span></div>` : ''}
+                        ${q.hints ? `<div class="q-hints" style="display:flex; gap:6px;">💡 Gợi ý: <span style="flex:1;color:#f59e0b;" contenteditable="true" onblur="generatedQuestions[${i}].hints = this.innerText">${q.hints}</span></div>` : ''}
                     </div>
                 </div>`).join('');
         }
