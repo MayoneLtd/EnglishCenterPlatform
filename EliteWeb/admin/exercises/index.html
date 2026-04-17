@@ -78,12 +78,12 @@
 
         <!-- Section Tabs -->
         <div class="section-tabs">
-            <button class="section-tab active" data-section="create"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo bài tập</button>
-            <button class="section-tab" data-section="library"><i class="fa-solid fa-book"></i> Thư viện</button>
+            <button class="section-tab active" data-section="library"><i class="fa-solid fa-book"></i> Thư viện</button>
+            <button class="section-tab" data-section="create"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo bài tập</button>
         </div>
 
         <!-- ===== SECTION: Tạo bài tập ===== -->
-        <div class="section-content active" id="sec-create">
+        <div class="section-content" id="sec-create">
             <!-- Loading states -->
             <div id="ocrLoading" style="display:none;">
                 <div class="loading-container">
@@ -257,7 +257,7 @@
         </div>
 
         <!-- ===== SECTION: Thư viện ===== -->
-        <div class="section-content" id="sec-library">
+        <div class="section-content active" id="sec-library">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
                 <div>
                     <h2>🗂️ Thư viện bài tập</h2>
@@ -299,9 +299,9 @@
     <div id="toastContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/env.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/js/gemini.js"></script>
+    <script src="/js/env.js?v=2"></script>
+    <script src="/js/supabase.js?v=2"></script>
+    <script src="/js/gemini.js?v=2"></script>
     <script>
         // ===== State =====
         let currentProfile = null;
@@ -752,6 +752,7 @@
                 });
             } catch(e) { console.warn('Could not load courses for dropdown'); }
             updateFlow();
+            loadLibrary(); // Tải thư viện mặc định ban đầu
             document.getElementById('loadingOverlay').style.display = 'none';
         })();
     </script>

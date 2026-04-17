@@ -94,12 +94,23 @@
 
         <!-- TAB: Chi tiết khóa học -->
         <div class="tab-content" id="tab-course-detail">
-            <div class="tab-title" style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
+            <div class="tab-title" style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div style="flex:1;">
                     <h2 id="sdCourseName">Tên khóa học</h2>
                     <p id="sdCourseTeacher" style="color:var(--text-muted);"><i class="fa-solid fa-user-tie"></i> Giảng viên</p>
+                    
+                    <!-- Progress Bar -->
+                    <div id="sdCourseProgressContainer" style="margin-top:15px; width:100%; max-width:400px; display:none;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                            <span style="font-size:13px; color:var(--text-light);">Tiến độ khóa học</span>
+                            <span id="sdCourseProgressPct" style="font-size:13px; font-weight:700; color:var(--accent);">0%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
+                            <div id="sdCourseProgressFill" style="height:100%; width:0%; background:var(--accent); transition:width 0.5s ease;"></div>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn btn-secondary" onclick="switchTab('courses')">← Lớp của tôi</button>
+                <button class="btn btn-secondary" onclick="switchTab('courses')" style="flex-shrink:0;">← Lớp của tôi</button>
             </div>
             
             <div class="dashboard-section">
@@ -119,21 +130,38 @@
 
         <!-- TAB: Lịch sử -->
         <div class="tab-content" id="tab-history">
-            <div class="tab-title"><h2>Lịch sử học tập</h2><p>Xem lại toàn bộ các buổi học bạn đã tham gia.</p></div>
-            <div class="dashboard-section">
-                <div class="table-wrap">
-                    <table class="dash-table">
-                        <thead><tr><th>Ngày học</th><th>Khóa học</th><th>Bài học</th><th>Thời gian</th><th>Trạng thái</th></tr></thead>
-                        <tbody id="historyTable"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Đang tải...</td></tr></tbody>
-                    </table>
+            <div class="tab-title"><h2>Lịch sử học tập</h2><p>Ghi lại các khóa học bạn đang tham gia và đã hoàn thành.</p></div>
+            
+            <div style="margin-bottom:32px;">
+                <h3 style="font-size:18px;font-weight:600;color:var(--text-light);margin-bottom:16px;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--accent);margin-right:8px;--fa-animation-duration: 3s;"></i> Khóa học đang học</h3>
+                <div class="dashboard-grid" id="historyOngoingList">
+                    <p style="color:var(--text-muted);">Đang tải...</p>
+                </div>
+            </div>
+
+            <div>
+                <h3 style="font-size:18px;font-weight:600;color:var(--text-light);margin-bottom:16px;"><i class="fa-solid fa-award" style="color:#10b981;margin-right:8px;"></i> Khóa học đã hoàn thành</h3>
+                <div class="dashboard-grid" id="historyCompletedList">
+                    <p style="color:var(--text-muted);">Đang tải...</p>
                 </div>
             </div>
         </div>
 
         <!-- TAB: Đánh giá -->
         <div class="tab-content" id="tab-evaluations">
-            <div class="tab-title"><h2>Đánh giá kết quả</h2><p>Bảng điểm, nhận xét từ giảng viên và lộ trình cải thiện.</p></div>
-            <div id="evalsList"><p style="color:var(--text-muted);">Đang tải...</p></div>
+            <div class="tab-title"><h2>Đánh giá kết quả</h2><p>Kết quả bài tập AI và nhận xét từ giảng viên.</p></div>
+            
+            <!-- Exercise Results -->
+            <div style="margin-bottom:32px;">
+                <h3 style="font-size:18px;font-weight:600;color:var(--text-light);margin-bottom:16px;"><i class="fa-solid fa-robot" style="color:var(--accent);margin-right:8px;"></i>Kết quả Bài tập AI</h3>
+                <div id="exerciseResultsList"><p style="color:var(--text-muted);">Đang tải...</p></div>
+            </div>
+
+            <!-- Teacher Evaluations -->
+            <div>
+                <h3 style="font-size:18px;font-weight:600;color:var(--text-light);margin-bottom:16px;"><i class="fa-solid fa-chalkboard-user" style="color:#60A5FA;margin-right:8px;"></i>Nhận xét từ Giảng viên</h3>
+                <div id="evalsList"><p style="color:var(--text-muted);">Đang tải...</p></div>
+            </div>
         </div>
 
     </main>
@@ -218,7 +246,7 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabase.js"></script>
+    <script src="/js/supabase.js?v=2"></script>
     <script>
         let currentProfile = null;
         let globalEnrollments = [];
@@ -336,10 +364,12 @@
             document.getElementById('overviewCourses').innerHTML = ovCourseHtml || '<p style="color:var(--text-muted);">Không có khóa học đang học.</p>';
 
             // Courses tab
-            const coursesHtml = enrollments.map(e => `
+            const renderCourseCard = (e) => `
                 <div class="dash-course-card">
                     <div class="dcc-header">
-                        <img src="assets/english_course.png" alt="${e.courses?.name}" style="${e.progress >= 100 ? 'filter:hue-rotate(40deg);' : ''}">
+                        <div style="width:48px;height:48px;border-radius:12px;background:var(--bg-dark);display:flex;align-items:center;justify-content:center;font-size:20px;color:${e.progress >= 100 ? '#4ADE80' : 'var(--accent)'};border:1px solid rgba(255,255,255,0.1);margin-right:15px;flex-shrink:0;">
+                            <i class="fa-solid ${e.progress >= 100 ? 'fa-graduation-cap' : 'fa-book-open'}"></i>
+                        </div>
                         <div>
                             <h4>${e.courses?.name || ''}</h4>
                             <p>${e.courses?.teacher_name || ''}</p>
@@ -354,22 +384,155 @@
                         <span class="progress-pct" style="color:${e.progress >= 100 ? '#4ADE80' : 'var(--accent)'};">${e.progress}%</span>
                     </div>
                     <div class="progress-bar"><div class="progress-fill" style="width:${e.progress}%;${e.progress >= 100 ? 'background:#4ADE80;' : ''}"></div></div>
-                    <a href="#" onclick="event.preventDefault(); viewCourseDetail('${e.courses?.id}');" class="btn ${e.progress >= 100 ? 'btn-outline' : 'btn-primary'}" style="width:100%;margin-top:15px;padding:10px;font-size:14px;">${e.progress >= 100 ? 'Xem lại lớp học' : 'Vào lớp học'}</a>
-                </div>`).join('');
-            document.getElementById('coursesList').innerHTML = coursesHtml || '<p style="color:var(--text-muted);">Chưa đăng ký khóa học nào.</p>';
+                    <a href="#" onclick="event.preventDefault(); viewCourseDetail('${e.courses?.id}');" class="btn ${e.progress >= 100 ? 'btn-outline' : 'btn-primary'}" style="width:100%;margin-top:15px;padding:10px;font-size:14px;">${e.progress >= 100 ? 'Xem lại bài học' : 'Vào lớp học'}</a>
+                </div>`;
 
-            // History tab
-            const histHtml = history.map(h => `
-                <tr>
-                    <td>${formatDate(h.learned_at)}</td>
-                    <td>${h.courses?.name || ''}</td>
-                    <td>${h.lesson_name}</td>
-                    <td>${h.duration_minutes} phút</td>
-                    <td><span class="dash-status status-completed">Hoàn thành</span></td>
-                </tr>`).join('');
-            document.getElementById('historyTable').innerHTML = histHtml || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Chưa có lịch sử.</td></tr>';
+            document.getElementById('coursesList').innerHTML = enrollments.map(renderCourseCard).join('') || '<p style="color:var(--text-muted);">Chưa đăng ký khóa học nào.</p>';
 
-            // Evaluations tab
+            // Tính điểm bài tập cao nhất cho từng bài
+            const bestSubs = {};
+            submissions.forEach(s => {
+                const existing = bestSubs[s.exercise_id];
+                if (!existing || s.total_score > existing.total_score) {
+                    bestSubs[s.exercise_id] = s;
+                }
+            });
+
+            // Lịch sử học tập (History tab): Không có nút Vào lớp, hiển thị điểm số
+            const renderHistoryCard = (e) => {
+                const courseName = e.courses?.name || '';
+                const courseExercises = allExercises.filter(ex => ex.grade === courseName);
+                
+                let courseMaxPoints = 0;
+                let coursePointsAchieved = 0;
+                
+                courseExercises.forEach(ex => {
+                    const defaultMax = ex.question_count || 10;
+                    const sub = bestSubs[ex.id];
+                    if (sub) {
+                        courseMaxPoints += (sub.max_score || defaultMax);
+                        coursePointsAchieved += (sub.total_score || 0);
+                    } else {
+                        courseMaxPoints += defaultMax;
+                    }
+                });
+                
+                let pointsString = '';
+                if (courseExercises.length === 0) {
+                    pointsString = '<span style="color:var(--text-muted);font-size:13px;">Chưa giao bài</span>';
+                } else if (courseMaxPoints === 0) {
+                    pointsString = '<span style="color:var(--text-muted);font-size:13px;">Chi tiết...</span>';
+                } else {
+                    const pct = Math.round((coursePointsAchieved / courseMaxPoints) * 100);
+                    const isPassed = pct >= 80;
+                    const color = isPassed ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
+                    pointsString = `<span style="font-size:16px;font-weight:700;color:${color};">${coursePointsAchieved}/${courseMaxPoints}</span> <span style="font-size:12px;color:var(--text-muted);">(${pct}%)</span>`;
+                }
+
+                return `
+                <div class="dash-course-card">
+                    <div class="dcc-header">
+                        <div style="width:48px;height:48px;border-radius:12px;background:var(--bg-dark);display:flex;align-items:center;justify-content:center;font-size:20px;color:${e.progress >= 100 ? '#4ADE80' : 'var(--accent)'};border:1px solid rgba(255,255,255,0.1);margin-right:15px;flex-shrink:0;">
+                            <i class="fa-solid ${e.progress >= 100 ? 'fa-graduation-cap' : 'fa-book-open'}"></i>
+                        </div>
+                        <div>
+                            <h4>${courseName}</h4>
+                            <p>${e.courses?.teacher_name || ''}</p>
+                        </div>
+                    </div>
+                    <div class="dcc-meta">
+                        <div><i class="fa-solid fa-calendar"></i> Bắt đầu: ${formatDate(e.enrolled_at)}</div>
+                    </div>
+                    
+                    <div style="margin-top:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);padding:10px 14px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:13px;color:var(--text-light);"><i class="fa-solid fa-bullseye" style="color:var(--accent);margin-right:6px;"></i>Kết quả bài tập</span>
+                        <div>${pointsString}</div>
+                    </div>
+
+                    <div class="progress-info" style="margin-top:12px;">
+                        <span>Tiến độ học</span>
+                        <span class="progress-pct" style="color:${e.progress >= 100 ? '#4ADE80' : 'var(--accent)'};">${e.progress}%</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${e.progress}%;${e.progress >= 100 ? 'background:#4ADE80;' : ''}"></div></div>
+                </div>`;
+            };
+
+            window.refreshDashboardLists = () => {
+                document.getElementById('coursesList').innerHTML = globalEnrollments.map(renderCourseCard).join('') || '<p style="color:var(--text-muted);">Chưa đăng ký khóa học nào.</p>';
+                const ongoing = globalEnrollments.filter(e => e.progress < 100);
+                const completed = globalEnrollments.filter(e => e.progress >= 100);
+                document.getElementById('historyOngoingList').innerHTML = ongoing.map(renderHistoryCard).join('') || '<p style="color:var(--text-muted);grid-column:1/-1;">Hiện không có khóa học nào đang học.</p>';
+                document.getElementById('historyCompletedList').innerHTML = completed.map(renderHistoryCard).join('') || '<p style="color:var(--text-muted);grid-column:1/-1;">Bạn chưa hoàn thành khóa học nào.</p>';
+            };
+
+            // Initial render
+            window.refreshDashboardLists();
+
+            // Evaluations tab - Exercise Results
+            const subEntries = Object.values(bestSubs);
+            
+            if (subEntries.length > 0) {
+                // Group submissions by exercise grade/course
+                const subsByGrade = {};
+                subEntries.forEach(s => {
+                    const exTitle = s.exercises?.title || 'Bài tập';
+                    // Find the exercise grade from allExercises
+                    const fullEx = allExercises.find(e => e.id === s.exercise_id);
+                    const grade = fullEx?.grade || 'Chung';
+                    if (!subsByGrade[grade]) subsByGrade[grade] = [];
+                    subsByGrade[grade].push({ ...s, exTitle, fullEx });
+                });
+
+                let exResultHtml = '';
+                for (const grade in subsByGrade) {
+                    const items = subsByGrade[grade];
+                    exResultHtml += `
+                    <div style="margin-bottom:24px;">
+                        <div style="display:flex;align-items:center;margin-bottom:12px;">
+                            <i class="fa-solid fa-folder-open" style="color:var(--secondary);margin-right:8px;"></i>
+                            <strong style="color:var(--text-light);font-size:16px;">${grade}</strong>
+                            <span style="margin-left:10px;font-size:12px;background:rgba(255,255,255,0.1);padding:3px 10px;border-radius:20px;color:var(--text-muted);">${items.length} bài</span>
+                        </div>
+                        ${items.map(s => {
+                            const pct = Math.round((s.total_score / Math.max(1, s.max_score)) * 100);
+                            const isPassed = pct >= 80;
+                            const scoreColor = isPassed ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
+                            const comment = s.result?.overallComment || '';
+                            const strengths = s.result?.strengths || [];
+                            const weaknesses = s.result?.weaknesses || [];
+                            return `
+                            <div style="padding:16px 20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin-bottom:12px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                                    <div>
+                                        <strong style="font-size:15px;color:var(--text-light);">${s.exTitle}</strong>
+                                        <span style="font-size:12px;color:var(--text-muted);margin-left:10px;">${formatDate(s.submitted_at)}</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <span class="ex-badge ${isPassed ? 'ex-badge-emerald' : 'ex-badge-amber'}">${isPassed ? '✓ Pass' : 'Chưa Pass'}</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                                    <div style="flex:1;">
+                                        <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;">
+                                            <div style="height:100%;width:${pct}%;background:${scoreColor};border-radius:8px;transition:width 0.5s ease;"></div>
+                                        </div>
+                                    </div>
+                                    <span style="font-size:18px;font-weight:700;color:${scoreColor};min-width:70px;text-align:right;">${s.total_score}/${s.max_score}</span>
+                                    <span style="font-size:13px;color:var(--text-muted);">(${pct}%)</span>
+                                </div>
+                                ${comment ? `<div style="padding:10px 14px;background:rgba(59,130,246,0.06);border-radius:8px;font-size:13px;color:var(--text-muted);border-left:3px solid rgba(59,130,246,0.4);margin-bottom:8px;"><i class="fa-solid fa-robot" style="margin-right:6px;color:#60A5FA;"></i>${comment.replace(/\n/g, '<br>')}</div>` : ''}
+                                ${strengths.length ? `<div style="font-size:12px;color:#10b981;margin-top:6px;">💪 ${strengths.join(' · ')}</div>` : ''}
+                                ${weaknesses.length ? `<div style="font-size:12px;color:#f59e0b;margin-top:4px;">⚠️ ${weaknesses.join(' · ')}</div>` : ''}
+                            </div>`;
+                        }).join('')}
+                    </div>`;
+                }
+                document.getElementById('exerciseResultsList').innerHTML = exResultHtml;
+            } else {
+                document.getElementById('exerciseResultsList').innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;">Chưa có kết quả bài tập nào. Hãy làm bài tập để xem đánh giá tại đây!</p>';
+            }
+
+            // Evaluations tab - Teacher evaluations
             const evalHtml = evals.map(ev => `
                 <div class="eval-card">
                     <div class="eval-header">
@@ -418,6 +581,14 @@
             document.getElementById('sdCourseName').textContent = enrollment.courses.name;
             document.getElementById('sdCourseTeacher').innerHTML = `<i class="fa-solid fa-user-tie"></i> Giảng viên: ${enrollment.courses.teacher_name || 'Đang cập nhật'}`;
             
+            // Render progress
+            const progress = enrollment.progress || 0;
+            document.getElementById('sdCourseProgressContainer').style.display = 'block';
+            document.getElementById('sdCourseProgressPct').textContent = `${progress}%`;
+            document.getElementById('sdCourseProgressPct').style.color = progress >= 100 ? '#4ADE80' : 'var(--accent)';
+            document.getElementById('sdCourseProgressFill').style.width = `${progress}%`;
+            document.getElementById('sdCourseProgressFill').style.background = progress >= 100 ? '#4ADE80' : 'var(--accent)';
+            
             document.getElementById('sdCourseLessonsList').innerHTML = '<p style="color:var(--text-muted);">Đang tải bài giảng...</p>';
             switchTab('course-detail');
             
@@ -426,16 +597,27 @@
                 if (!lessons || lessons.length === 0) {
                     document.getElementById('sdCourseLessonsList').innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;">Giảng viên chưa tải lên bài giảng nào.</p>';
                 } else {
+                    // Cache the ACTUAL lesson count for this course
+                    window._courseLessonCounts = window._courseLessonCounts || {};
+                    window._courseLessonCounts[courseId] = lessons.length;
+                    
                     document.getElementById('sdCourseLessonsList').innerHTML = lessons.map(l => {
                         window.cachedLessons = window.cachedLessons || {};
                         window.cachedLessons[l.id] = l;
+                        
+                        // Check if lesson was already viewed (for UI indicator)
+                        const storageKey = `viewedLessons_${currentUserId}`;
+                        const viewed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                        const isViewed = viewed.includes(l.id);
+                        
                         const dateStr = l.lesson_date ? new Date(l.lesson_date).toLocaleDateString('vi-VN', {weekday:'short', day:'2-digit', month:'2-digit', year:'numeric'}) : '';
                         return `
                         <div class="lesson-card" style="cursor:pointer;" onclick="viewLessonDetailInline('${l.id}')">
                             <div class="lc-header" style="margin-bottom:0;">
                                 <div style="display:flex;align-items:center;flex:1;">
-                                    <span class="lc-number">${l.lesson_number}</span>
+                                    <span class="lc-number" style="${isViewed ? 'background:#10b981;' : ''}">${l.lesson_number}</span>
                                     <span class="lc-title">${l.title || 'Buổi ' + l.lesson_number}</span>
+                                    ${isViewed ? '<span style="font-size:11px;color:#10b981;margin-left:8px;">✓ Đã xem</span>' : ''}
                                     ${dateStr ? `<span class="lc-date" style="margin-right:15px;"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>` : ''}
                                     <i class="fa-solid fa-play" style="margin-left:auto; margin-right:10px; color:var(--accent); font-size: 14px;"></i>
                                 </div>
@@ -458,7 +640,12 @@
                     let submissions = {};
                     try {
                         const subs = await getStudentSubmissions(currentUserId);
-                        subs.forEach(s => { submissions[s.exercise_id] = s; });
+                        subs.forEach(s => {
+                            const existing = submissions[s.exercise_id];
+                            if (!existing || s.total_score > existing.total_score) {
+                                submissions[s.exercise_id] = s;
+                            }
+                        });
                     } catch(e) {}
                     
                     const gradeExs = exercises.slice().reverse(); // asc order based on created_at
@@ -534,10 +721,11 @@
         }
         
         window.cachedLessons = {};
-        function viewLessonDetailInline(id) {
+        async function viewLessonDetailInline(id) {
             const l = window.cachedLessons[id];
             if(!l) return;
             document.getElementById('lessonModalTitleSD').textContent = l.title || ('Buổi ' + l.lesson_number);
+
             
             let html = '';
             
@@ -573,6 +761,100 @@
 
             document.getElementById('lessonModalBodySD').innerHTML = html;
             openModal('lessonDetailModalSD');
+
+            // --- Tracking Progress (localStorage-based, persistent) ---
+            try {
+                const enrollment = globalEnrollments.find(e => e.course_id === l.course_id);
+                if (enrollment) {
+                    // 1. Load persisted viewed lessons from localStorage
+                    const storageKey = `viewedLessons_${currentUserId}`;
+                    let viewedArr = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    
+                    // 2. Add this lesson if not already seen
+                    if (!viewedArr.includes(l.id)) {
+                        viewedArr.push(l.id);
+                        localStorage.setItem(storageKey, JSON.stringify(viewedArr));
+                        
+                        // Best-effort: persist to DB too
+                        const lessonName = l.title || ('Buổi ' + l.lesson_number);
+                        addLearningHistory({
+                            student_id: currentUserId,
+                            course_id: l.course_id,
+                            lesson_name: lessonName,
+                            duration_minutes: 30,
+                            learned_at: new Date().toISOString()
+                        }).catch(e => console.warn('History insert skipped:', e.message));
+                    }
+                    
+                    // 3. Count viewed lessons for THIS course only
+                    //    We need to know which lesson IDs belong to this course
+                    let totalLessons = 0;
+                    let viewedForCourse = 0;
+                    
+                    // Use cached lessons from viewCourseDetail (they are stored in window.cachedLessons)
+                    const courseLessonIds = [];
+                    if (window.cachedLessons) {
+                        Object.values(window.cachedLessons).forEach(cl => {
+                            if (cl.course_id === l.course_id) {
+                                courseLessonIds.push(cl.id);
+                            }
+                        });
+                    }
+                    
+                    // Also check if we cached the count
+                    if (window._courseLessonCounts && window._courseLessonCounts[l.course_id]) {
+                        totalLessons = window._courseLessonCounts[l.course_id];
+                    } else {
+                        totalLessons = courseLessonIds.length;
+                    }
+                    
+                    // Fallback: fetch from DB if we don't have lesson info
+                    if (totalLessons === 0) {
+                        try {
+                            const dbLessons = await getCourseLessons(l.course_id);
+                            totalLessons = dbLessons.length;
+                            dbLessons.forEach(dl => {
+                                if (!courseLessonIds.includes(dl.id)) courseLessonIds.push(dl.id);
+                            });
+                        } catch(e) { totalLessons = 1; }
+                    }
+                    
+                    if (totalLessons < 1) totalLessons = 1;
+                    
+                    // Count how many of THIS course's lessons are in the viewed list
+                    viewedForCourse = courseLessonIds.filter(id => viewedArr.includes(id)).length;
+                    
+                    const newProgress = Math.min(100, Math.round((viewedForCourse / totalLessons) * 100));
+                    console.log(`[Progress] Course ${l.course_id}: Viewed ${viewedForCourse}/${totalLessons} → ${newProgress}% (was ${enrollment.progress || 0}%)`);
+                    
+                    // 4. Update if changed
+                    if (newProgress !== (enrollment.progress || 0)) {
+                        enrollment.progress = newProgress;
+                        
+                        // Update DB (best effort)
+                        updateEnrollmentProgress(enrollment.id, newProgress)
+                            .catch(e => console.warn('DB progress update failed:', e.message));
+                        
+                        // Update Course Detail UI
+                        const pctEl = document.getElementById('sdCourseProgressPct');
+                        const fillEl = document.getElementById('sdCourseProgressFill');
+                        if (pctEl && fillEl) {
+                            pctEl.textContent = `${newProgress}%`;
+                            pctEl.style.color = newProgress >= 100 ? '#4ADE80' : 'var(--accent)';
+                            fillEl.style.width = `${newProgress}%`;
+                            fillEl.style.background = newProgress >= 100 ? '#4ADE80' : 'var(--accent)';
+                        }
+                        
+                        if (typeof window.refreshDashboardLists === 'function') {
+                            window.refreshDashboardLists();
+                        }
+                        
+                        showToast(`Tiến độ khóa học: ${newProgress}%`, 'success');
+                    }
+                }
+            } catch (err) {
+                console.warn('Lỗi khi tính tiến độ học:', err);
+            }
         }
     </script>
 </body>

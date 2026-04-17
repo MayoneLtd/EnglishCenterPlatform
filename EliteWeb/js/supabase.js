@@ -21,8 +21,12 @@ async function signOut() {
 }
 
 async function getSession() {
+    // First try getSession (fast, from memory)
     const { data: { session } } = await supabaseClient.auth.getSession();
-    return session;
+    if (session) return session;
+    // If no session in memory, try refreshing the token
+    const { data: { session: refreshed } } = await supabaseClient.auth.refreshSession();
+    return refreshed;
 }
 
 async function getProfile() {
@@ -159,6 +163,14 @@ async function addLearningHistory(data) {
     if (error) throw error;
 }
 
+async function updateEnrollmentProgress(enrollmentId, progressPct) {
+    const { error } = await supabaseClient
+        .from('enrollments')
+        .update({ progress: progressPct })
+        .eq('id', enrollmentId);
+    if (error) throw error;
+}
+
 async function getStats() {
     const { count: studentCount } = await supabaseClient.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student');
     const { count: courseCount } = await supabaseClient.from('courses').select('*', { count: 'exact', head: true }).eq('status', 'active');
@@ -218,20 +230,42 @@ async function deleteExercise(id) {
 // ===== Submission Helpers =====
 
 async function submitExerciseResult(exerciseId, studentId, answers, result, totalScore, maxScore) {
-    const { data, error } = await supabaseClient
-        .from('submissions')
-        .insert({
-            exercise_id: exerciseId,
-            student_id: studentId,
-            answers: answers,
-            result: result,
-            total_score: totalScore,
-            max_score: maxScore
-        })
-        .select()
-        .single();
-    if (error) throw error;
-    return data;
+    // Check if a submission already exists for this student + exercise
+    const existing = await getStudentSubmissionForExercise(studentId, exerciseId);
+    
+    if (existing) {
+        // Update existing submission instead of creating duplicate
+        const { data, error } = await supabaseClient
+            .from('submissions')
+            .update({
+                answers: answers,
+                result: result,
+                total_score: totalScore,
+                max_score: maxScore,
+                submitted_at: new Date().toISOString()
+            })
+            .eq('id', existing.id)
+            .select()
+            .single();
+        if (error) throw error;
+        return data;
+    } else {
+        // Insert new submission
+        const { data, error } = await supabaseClient
+            .from('submissions')
+            .insert({
+                exercise_id: exerciseId,
+                student_id: studentId,
+                answers: answers,
+                result: result,
+                total_score: totalScore,
+                max_score: maxScore
+            })
+            .select()
+            .single();
+        if (error) throw error;
+        return data;
+    }
 }
 
 async function getStudentSubmissions(studentId) {

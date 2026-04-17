@@ -114,9 +114,9 @@
     <div id="toastContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/env.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/js/gemini.js"></script>
+    <script src="/js/env.js?v=2"></script>
+    <script src="/js/supabase.js?v=2"></script>
+    <script src="/js/gemini.js?v=2"></script>
     <script>
         // ===== State =====
         let currentProfile = null;
@@ -159,64 +159,81 @@
                 if (!exercises.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
                 empty.style.display = 'none';
 
-                // Load submissions for current student
+                // Load submissions for current student (keep BEST score per exercise)
+                submissions = {};
                 try {
                     const subs = await getStudentSubmissions(userId);
-                    subs.forEach(s => { submissions[s.exercise_id] = s; });
-                } catch(e) {}
-
-                // Calculate unlock status
-                const groupedExercises = {};
-                exercises.forEach(ex => {
-                    if (ex.grade === 'Chung') return;
-                    if (!groupedExercises[ex.grade]) groupedExercises[ex.grade] = [];
-                    groupedExercises[ex.grade].push(ex);
-                });
-                
-                const lockedExerciseIds = new Set();
-                for (const grade in groupedExercises) {
-                    const gradeExs = groupedExercises[grade].slice().reverse(); // asc order
-                    let previousPassed = true;
-                    for (const ex of gradeExs) {
-                        if (!previousPassed) {
-                            lockedExerciseIds.add(ex.id);
-                        } else {
-                            const sub = submissions[ex.id];
-                            if (!sub || (sub.total_score / Math.max(1, sub.max_score)) < 0.8) {
-                                previousPassed = false;
-                            }
+                    subs.forEach(s => {
+                        const existing = submissions[s.exercise_id];
+                        // Keep the submission with the highest score
+                        if (!existing || s.total_score > existing.total_score) {
+                            submissions[s.exercise_id] = s;
                         }
-                    }
-                }
+                    });
+                } catch(e) { console.warn('Load submissions error:', e); }
 
-                grid.innerHTML = exercises.map(ex => {
-                    const sub = submissions[ex.id];
-                    const isLocked = lockedExerciseIds.has(ex.id);
-                    const isPassed = sub && (sub.total_score / Math.max(1, sub.max_score)) >= 0.8;
+                // Group exercises by grade for display
+                const grouped = {};
+                exercises.forEach(ex => {
+                    const g = ex.grade || 'Chung';
+                    if (!grouped[g]) grouped[g] = [];
+                    grouped[g].push(ex);
+                });
+
+                let html = '';
+                for (const grade in grouped) {
+                    // Reverse to order by oldest first (chronological order for progression)
+                    const gradeExs = grouped[grade].reverse();
                     
-                    return `
-                    <div class="exercise-card" ${isLocked ? 'style="opacity:0.6;cursor:not-allowed;" title="Vui lòng đạt 80% bài trước để mở khóa"' : `onclick="startExercise('${ex.id}')"`}>
-                        <div class="card-header">
-                            <h3 class="card-title">${ex.title}</h3>
-                            ${isLocked ? '<span class="ex-badge ex-badge-rose">🔒 Khóa</span>' : 
-                              (isPassed ? '<span class="ex-badge ex-badge-emerald">✓ Đã Pass</span>' : 
-                              (sub ? '<span class="ex-badge ex-badge-amber">Chưa Pass</span>' : '<span class="ex-badge ex-badge-blue">Mới</span>'))}
+                    let previousPassed = true; // Khởi tạo: Bài đầu tiên luôn mở khóa
+
+                    html += `
+                    <div style="margin-bottom:32px; width:100%;">
+                        <div style="display:flex;align-items:center;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;">
+                            <h3 style="font-size:20px; font-weight:600; color:var(--text-light); margin:0;"><i class="fa-solid fa-folder-open" style="color:var(--accent);margin-right:8px;"></i> ${grade}</h3>
+                            <span style="margin-left:12px;font-size:12px;background:rgba(255,255,255,0.1);padding:4px 10px;border-radius:20px;color:var(--text-muted);font-weight:600;">${gradeExs.length} bài tập</span>
                         </div>
-                        <p class="card-desc">${ex.description || ''}</p>
-                        <div class="card-meta">
-                            <span>🏫 ${ex.grade || 'Chung'}</span>
-                            <span>📋 ${ex.question_count} câu</span>
-                            <span class="ex-badge ${ex.difficulty === 'Dễ' ? 'ex-badge-emerald' : ex.difficulty === 'Trung bình' ? 'ex-badge-amber' : 'ex-badge-rose'}">${ex.difficulty}</span>
+                        <div class="exercise-cards-grid">
+                            ${gradeExs.map(ex => {
+                                const sub = submissions[ex.id];
+                                const scorePercent = sub ? (sub.total_score / Math.max(1, sub.max_score)) * 100 : 0;
+                                const isPassed = sub && scorePercent >= 80;
+                                
+                                // Quyết định xem bài này có bị khóa ko (dựa vào cờ previousPassed trước đó)
+                                const isLocked = !previousPassed;
+                                
+                                // Cập nhật cờ previousPassed cho bài TIẾP THEO
+                                // Nếu bài NÀY pass, thì bài tiếp theo được mở
+                                previousPassed = isPassed;
+                                
+                                return `
+                                <div class="exercise-card" ${isLocked ? 'style="opacity:0.6;cursor:not-allowed;" title="Vui lòng hoàn thành khóa học trước đó (>= 80%) để mở khóa khóa này"' : `onclick="startExercise('${ex.id}')" style="cursor:pointer;"`}>
+                                    <div class="card-header">
+                                        <h3 class="card-title">${ex.title}</h3>
+                                        ${isLocked ? '<span class="ex-badge ex-badge-rose">🔒 Khóa</span>' : 
+                                          (isPassed ? '<span class="ex-badge ex-badge-emerald">✓ Đã Pass</span>' : 
+                                          (sub ? '<span class="ex-badge ex-badge-amber">Chưa Pass</span>' : '<span class="ex-badge ex-badge-blue">Mới</span>'))}
+                                    </div>
+                                    <p class="card-desc">${ex.description || ''}</p>
+                                    <div class="card-meta">
+                                        <span>📋 ${ex.question_count} câu</span>
+                                        <span class="ex-badge ${ex.difficulty === 'Dễ' ? 'ex-badge-emerald' : ex.difficulty === 'Trung bình' ? 'ex-badge-amber' : 'ex-badge-rose'}">${ex.difficulty}</span>
+                                    </div>
+                                    ${sub ? `
+                                    <div style="margin-top:10px;display:flex;align-items:center;gap:8px;">
+                                        <div class="ex-progress-bar" style="flex:1;">
+                                            <div class="ex-progress-fill" style="width:${scorePercent}%; background: ${isPassed ? '#10b981' : '#f59e0b'};"></div>
+                                        </div>
+                                        <span style="font-size:13px;font-weight:700;color:${isPassed ? '#10b981' : '#f59e0b'};">${sub.total_score}/${sub.max_score}</span>
+                                    </div>
+                                    ${isPassed ? '<p style="font-size:12px;color:#10b981;margin-top:6px;">🎉 Bạn đã đạt! Bấm để làm lại nếu muốn.</p>' : 
+                                    '<p style="font-size:12px;color:#f59e0b;margin-top:6px;">📝 Bấm để thử lại để cải thiện điểm số và mở khóa!</p>'}` : ''}
+                                </div>`;
+                            }).join('')}
                         </div>
-                        ${sub ? `
-                        <div style="margin-top:10px;display:flex;align-items:center;gap:8px;">
-                            <div class="ex-progress-bar" style="flex:1;">
-                                <div class="ex-progress-fill" style="width:${(sub.total_score/Math.max(1, sub.max_score))*100}%; background: ${isPassed ? '#10b981' : '#f59e0b'};"></div>
-                            </div>
-                            <span style="font-size:13px;font-weight:700;color:${isPassed ? '#10b981' : '#f59e0b'};">${sub.total_score}/${sub.max_score}</span>
-                        </div>` : ''}
                     </div>`;
-                }).join('');
+                }
+                grid.innerHTML = html;
             } catch (err) {
                 showToast('Lỗi tải bài tập: ' + err.message, 'error');
             }
